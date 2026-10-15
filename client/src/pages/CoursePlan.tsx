@@ -73,8 +73,15 @@ function DialogueAudioControls({ week }: { week: CourseWeek }) {
   return <div className="dialogue-audio-controls"><button type="button" className="dialogue-play-all" onClick={playing ? stop : start}>{playing ? <Square size={15} /> : <Play size={15} fill="currentColor" />}{playing ? "หยุดบทสนทนา" : "ฟังบทสนทนาทั้งหมด"}</button><span>เสียงจีนกลาง · ฟังทีละประโยคพร้อมเว้นจังหวะ</span>{unsupported && <small role="status">อุปกรณ์นี้ไม่รองรับการอ่านออกเสียง กรุณาลอง Chrome หรือ Edge</small>}</div>;
 }
 
+const vocabularyEmoji: Record<string, string> = {
+  "名字":"🙋", "姓":"🪪", "朋友":"🧑🏻‍🤝‍🧑🏻", "国家":"🌏", "泰国":"🇹🇭", "中国":"🇨🇳", "汉语":"💬",
+  "零":"0️⃣", "一":"1️⃣", "二":"2️⃣", "电话":"📱", "号码":"🔢", "今天":"📅", "明天":"🌅", "星期":"🗓️", "月":"🌙", "点":"🕒",
+  "家":"🏠", "家人":"👨‍👩‍👧‍👦", "爸爸":"👨", "妈妈":"👩", "哥哥":"👦", "姐姐":"👧", "照片":"🖼️",
+  "米饭":"🍚", "面条":"🍜", "水":"💧", "茶":"🍵", "咖啡":"☕", "鸡肉":"🍗", "菜单":"📖", "好吃":"😋",
+  "衣服":"👕", "钱":"💴", "商店":"🏪", "地铁":"🚇", "公交车":"🚌", "出租车":"🚕", "医院":"🏥", "医生":"🩺", "天气":"🌤️"
+};
 function VocabularyGrid({ week }: { week: CourseWeek }) {
-  return <div className="week-vocabulary-grid">{week.words.map((word) => <article className="week-word" key={word.zh}><div className="week-word-title"><strong>{word.zh}</strong><SpeakButton text={word.zh} /></div><span>{word.py}</span><small>{word.th}</small></article>)}</div>;
+  return <div className="week-vocabulary-grid">{week.words.map((word) => <article className="week-word" key={word.zh}><div className="word-picture" aria-hidden="true">{vocabularyEmoji[word.zh] ?? "🀄"}</div><div className="week-word-title"><strong>{word.zh}</strong><SpeakButton text={word.zh} /></div><span>{word.py}</span><small>{word.th}</small></article>)}</div>;
 }
 
 function SentencePatterns({ week }: { week: CourseWeek }) {
