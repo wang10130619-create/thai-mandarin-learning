@@ -162,28 +162,5 @@ export const extraScenes: ExtraScene[] = [
     {speaker:"A",zh:"连上了，谢谢！",py:"Lián shàng le, xièxie!",th:"เชื่อมต่อได้แล้ว ขอบคุณ!"},
     {speaker:"B",zh:"不客气，有问题再告诉我。",py:"Bú kèqi, yǒu wèntí zài gàosu wǒ.",th:"ไม่เป็นไร มีปัญหาก็บอกฉันได้"}
   ]},
-  { id:"recycling", emoji:"♻️", title:"垃圾分類", setting:"在住處詢問不同垃圾應該丟在哪裡", visual:"♻️ 🗑️ 🧴", memory:"先辨認垃圾種類，再詢問對應的回收桶。", objects:["♻️ 回收","🧴 塑料瓶","🗑️ 垃圾桶"], lines:[
-    {speaker:"A",zh:"请问，塑料瓶要丢在哪里？",py:"Qǐngwèn, sùliào píng yào diū zài nǎli?",th:"ขอโทษ ขวดพลาสติกต้องทิ้งที่ไหน?"},
-    {speaker:"B",zh:"请放进蓝色的回收桶。",py:"Qǐng fàng jìn lánsè de huíshōu tǒng.",th:"กรุณาใส่ถังรีไซเคิลสีน้ำเงิน"},
-    {speaker:"A",zh:"纸盒也放这里吗？",py:"Zhǐhé yě fàng zhèlǐ ma?",th:"กล่องกระดาษก็ใส่ตรงนี้ไหม?"},
-    {speaker:"B",zh:"对，玻璃要放在另一个桶。",py:"Duì, bōli yào fàng zài lìng yí ge tǒng.",th:"ใช่ แก้วต้องใส่อีกถังหนึ่ง"},
-    {speaker:"A",zh:"我知道了，谢谢你。",py:"Wǒ zhīdào le, xièxie nǐ.",th:"เข้าใจแล้ว ขอบคุณ"},
-    {speaker:"B",zh:"不客气，一起保护环境。",py:"Bú kèqi, yìqǐ bǎohù huánjìng.",th:"ไม่เป็นไร มาช่วยกันรักษาสิ่งแวดล้อม"}
-  ]},
-  { id:"apartment", emoji:"🔑", title:"租房看房", setting:"看房時詢問租金、設備與入住日期", visual:"🏢 🔑 🛏️", memory:"看房要問租金、押金、設備與入住日期。", objects:["🏢 房子","💴 房租","🔑 入住"], lines:[
-    {speaker:"A",zh:"你好，我想看看这间房子。",py:"Nǐ hǎo, wǒ xiǎng kànkan zhè jiān fángzi.",th:"สวัสดี ฉันอยากดูห้องนี้"},
-    {speaker:"B",zh:"请进，房间里有空调和冰箱。",py:"Qǐng jìn, fángjiān lǐ yǒu kōngtiáo hé bīngxiāng.",th:"เชิญเข้ามา ในห้องมีแอร์และตู้เย็น"},
-    {speaker:"A",zh:"每个月的房租是多少？",py:"Měi ge yuè de fángzū shì duōshao?",th:"ค่าเช่ารายเดือนเท่าไร?"},
-    {speaker:"B",zh:"每个月三千块，押金一个月。",py:"Měi ge yuè sān qiān kuài, yājīn yí ge yuè.",th:"เดือนละ 3,000 หยวน มัดจำหนึ่งเดือน"},
-    {speaker:"A",zh:"我下个月可以入住吗？",py:"Wǒ xià ge yuè kěyǐ rùzhù ma?",th:"ฉันย้ายเข้าเดือนหน้าได้ไหม?"},
-    {speaker:"B",zh:"可以，我们再确认合同。",py:"Kěyǐ, wǒmen zài quèrèn hétong.",th:"ได้ เรามายืนยันสัญญากันอีกครั้ง"}
-  ]},
-  { id:"express-feelings", emoji:"😊", title:"表達心情與安慰朋友", setting:"朋友心情不好，主動關心並安慰對方", visual:"😊 💬 🤝", memory:"先關心對方，再聽對方說，最後給予支持。", objects:["😊 开心","😟 难过","🤝 别担心"], lines:[
-    {speaker:"A",zh:"你今天怎么了？看起来不太开心。",py:"Nǐ jīntiān zěnme le? Kàn qǐlái bú tài kāixīn.",th:"วันนี้คุณเป็นอะไร ดูไม่ค่อยมีความสุข"},
-    {speaker:"B",zh:"我今天遇到了一点儿麻烦。",py:"Wǒ jīntiān yùdào le yìdiǎnr máfan.",th:"วันนี้ฉันเจอปัญหานิดหน่อย"},
-    {speaker:"A",zh:"愿意跟我说说吗？",py:"Yuànyì gēn wǒ shuōshuo ma?",th:"อยากเล่าให้ฉันฟังไหม?"},
-    {speaker:"B",zh:"当然，我想找个人聊聊。",py:"Dāngrán, wǒ xiǎng zhǎo ge rén liáoliao.",th:"แน่นอน ฉันอยากหาใครสักคนคุยด้วย"},
-    {speaker:"A",zh:"别担心，我会陪着你。",py:"Bié dānxīn, wǒ huì péizhe nǐ.",th:"ไม่ต้องกังวล ฉันจะอยู่เป็นเพื่อนคุณ"},
-    {speaker:"B",zh:"谢谢你，跟你聊完好多了。",py:"Xièxie nǐ, gēn nǐ liáo wán hǎo duō le.",th:"ขอบคุณ คุยกับคุณแล้วรู้สึกดีขึ้นมาก"}
-  ]}
+
 ];
