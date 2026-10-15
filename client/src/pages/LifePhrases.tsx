@@ -194,6 +194,20 @@ export default function LifePhrases() {
     setPlaying(false);
   };
 
+  const sceneVisuals: Record<string, { icon: string; memory: string; objects: string[] }> = {
+    greeting: { icon: "👋 🧑🏻‍🤝‍🧑🏻", memory: "看見新朋友，先打招呼，再問名字。", objects: ["👋 你好", "🙋 我叫…", "🤝 很高興認識你"] },
+    restaurant: { icon: "🍜 🥢 🍵", memory: "先看菜單、點主食，再選飲料。", objects: ["📖 菜單", "🍜 牛肉面", "🥤 一杯水"] },
+    shopping: { icon: "👕 🛍️ 💴", memory: "看到商品，問價格、談折扣、選顏色。", objects: ["👕 衣服", "💴 多少钱？", "🎨 颜色"] },
+    directions: { icon: "🗺️ 🚇 📍", memory: "先找地點，再聽方向和所需時間。", objects: ["📍 在哪儿？", "➡️ 往前走", "⏱️ 五分钟"] },
+    convenience: { icon: "🏪 🧃 🍞", memory: "挑選商品、確認價格，最後付款。", objects: ["🧃 一瓶水", "🍞 面包", "📱 付款"] },
+    plans: { icon: "📅 ☕ 🕒", memory: "約時間要說日期、時刻和見面地點。", objects: ["📅 星期六", "🕒 下午三点", "📍 在…见"] },
+    cafe: { icon: "☕ 🧊 🧋", memory: "點飲料時，說品項、冷熱、甜度和杯型。", objects: ["☕ 拿铁", "🧊 冰的", "🍬 少糖"] },
+    hotel: { icon: "🏨 🧳 🛎️", memory: "入住時準備預訂資料，並詢問設施。", objects: ["🛎️ 办理入住", "🛂 护照", "📶 无线网络"] },
+    health: { icon: "🩺 🌡️ 🏥", memory: "描述哪裡不舒服、何時開始及其他症狀。", objects: ["🤕 头疼", "🤧 咳嗽", "🌡️ 体温"] },
+    phone: { icon: "📱 🏠 🚕", memory: "電話聯絡時，說明位置、交通和抵達時間。", objects: ["☎️ 喂", "🏠 到家", "🚕 出租车"] }
+  };
+  const visual = sceneVisuals[currentScene.id] ?? { icon: currentScene.emoji, memory: "先看情境圖，再聽、讀、說。", objects: [] };
+
   return <div className="life-page">
     <header className="life-header">
       <Link href="/" className="life-brand"><span className="life-brand-mark">中</span><span>จีนเริ่มต้น<small>เรียนรู้ทีละก้าว</small></span></Link>
@@ -212,6 +226,10 @@ export default function LifePhrases() {
           <div className="life-dialogue-heading"><div><span className="life-eyebrow">情境 · {String(scenes.findIndex((scene) => scene.id === activeScene) + 1).padStart(2, "0")}</span><h2>{currentScene.emoji} {currentScene.title}</h2><p>{currentScene.setting}</p></div><div className="life-audio-actions"><button onClick={playAll} className="life-play-all"><Play size={15} /> 播放整段</button><button onClick={stop} className="life-stop" disabled={!playing}><Square size={13} /> 停止</button></div></div>
           {audioError && <p className="life-audio-error" role="status">{audioError}</p>}
           {!voicesReady && !audioError && <p className="life-audio-hint">正在載入語音；若沒有中文語音，播放功能會使用瀏覽器可用的中文語音。</p>}
+          <section className="life-visual-memory" aria-label="情境圖像記憶">
+            <div className="life-visual-art"><span>{visual.icon}</span><small>情境圖像 · Visual memory</small></div>
+            <div className="life-visual-copy"><strong>先看圖，再記住中文</strong><p>{visual.memory}</p><div className="life-object-tags">{visual.objects.map((item) => <span key={item}>{item}</span>)}</div></div>
+          </section>
           <div className="life-lines">{currentScene.lines.map((line, index) => <article className={`life-line speaker-${line.speaker.toLowerCase()}`} key={`${currentScene.id}-${index}`}><span className="life-speaker">{line.speaker === "A" ? "甲" : "乙"}</span><div className="life-line-content"><strong className="life-chinese">{line.zh}</strong><span className="life-pinyin">{line.py}</span><span className="life-thai">{line.th}</span></div><button className="life-speak" aria-label={`播放中文：${line.zh}`} title="播放中文" onClick={() => speak(line.zh)}><Volume2 size={18} /></button></article>)}</div>
           <div className="life-bottom-note"><MessageCircle size={17} /><span>學習建議：先聽中文，再看拼音跟讀，最後只看中文試著自己說。</span></div>
         </section>
