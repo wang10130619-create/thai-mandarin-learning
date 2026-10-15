@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Volume2, Play, Square, MessageCircle, BookOpen } from "lucide-react";
 import { Link } from "wouter";
 import "./LifePhrases.css";
+import { extraScenes } from "./lifePhrasesExtra";
 
 type Line = { speaker: "A" | "B"; zh: string; py: string; th: string };
-type Scene = { id: string; emoji: string; title: string; setting: string; lines: Line[] };
+type Scene = { id: string; emoji: string; title: string; setting: string; lines: Line[]; visual?: string; memory?: string; objects?: string[] };
 
-const scenes: Scene[] = [
+const baseScenes: Scene[] = [
   { id: "greeting", emoji: "👋", title: "打招呼與自我介紹", setting: "在語言課上第一次遇見新朋友", lines: [
     {speaker:"A",zh:"你好！",py:"Nǐ hǎo!",th:"สวัสดี!"},
     {speaker:"B",zh:"你好！你叫什么名字？",py:"Nǐ hǎo! Nǐ jiào shénme míngzi?",th:"สวัสดี! คุณชื่ออะไร?"},
@@ -128,6 +129,7 @@ const scenes: Scene[] = [
     {speaker:"B",zh:"好，路上小心！",py:"Hǎo, lù shang xiǎoxīn!",th:"ได้เลย เดินทางระวังนะ!"}
   ]}
 ];
+const scenes: Scene[] = [...baseScenes, ...extraScenes];
 
 export default function LifePhrases() {
   const [activeScene, setActiveScene] = useState(scenes[0].id);
@@ -206,12 +208,12 @@ export default function LifePhrases() {
     health: { icon: "🩺 🌡️ 🏥", memory: "描述哪裡不舒服、何時開始及其他症狀。", objects: ["🤕 头疼", "🤧 咳嗽", "🌡️ 体温"] },
     phone: { icon: "📱 🏠 🚕", memory: "電話聯絡時，說明位置、交通和抵達時間。", objects: ["☎️ 喂", "🏠 到家", "🚕 出租车"] }
   };
-  const visual = sceneVisuals[currentScene.id] ?? { icon: currentScene.emoji, memory: "先看情境圖，再聽、讀、說。", objects: [] };
+  const visual = sceneVisuals[currentScene.id] ?? { icon: currentScene.visual ?? currentScene.emoji, memory: currentScene.memory ?? "先看情境圖，再聽、讀、說。", objects: currentScene.objects ?? [] };
 
   return <div className="life-page">
     <header className="life-header">
       <Link href="/" className="life-brand"><span className="life-brand-mark">中</span><span>จีนเริ่มต้น<small>เรียนรู้ทีละก้าว</small></span></Link>
-      <Link href="/" className="life-back"><ArrowLeft size={16} /> กลับหน้าหลัก</Link>
+      <div className="life-header-links"><Link href="/vocabulary" className="life-back">单词 · คำศัพท์</Link><Link href="/" className="life-back"><ArrowLeft size={16} /> กลับหน้าหลัก</Link></div>
     </header>
     <main className="life-main">
       <section className="life-hero">
