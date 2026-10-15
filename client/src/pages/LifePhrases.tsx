@@ -204,7 +204,7 @@ export default function LifePhrases() {
         <span className="life-eyebrow"><BookOpen size={15} /> 中文生活会话 · บทสนทนาในชีวิตประจำวัน</span>
         <h1>生活用语 <span>ภาษาจีนที่ใช้ได้ทุกวัน</span></h1>
         <p>ฝึกบทสนทนาตามสถานการณ์จริง อ่านจีนพร้อมพินอินและคำแปลภาษาไทย แล้วกดฟังทีละประโยคหรือเล่นต่อเนื่องทั้งบท</p>
-        <div className="life-stats"><span><b>{scenes.length}</b> สถานการณ์</span><span><b>{scenes.reduce((n, s) => n + s.lines.length, 0)}</b> ประโยคพร้อมเสียง</span><span><b>0</b> ไม่ต้องมีพื้นฐาน</span></div>
+        <div className="life-stats"><span><b>{scenes.length}</b> สถานการณ์</span><span><b>{scenes.reduce((n, s) => n + s.lines.length, 0)}</b> ประโยคพร้อมเสียง</span><span><b>初学者</b> เริ่มเรียนได้ทันที</span></div>
       </section>
       <section className="life-workspace">
         <aside className="life-sidebar"><h2>เลือกสถานการณ์</h2>{scenes.map((scene, index) => <button key={scene.id} className={activeScene === scene.id ? "life-scene-button active" : "life-scene-button"} onClick={() => { stop(); setActiveScene(scene.id); setAudioError(""); }}><span className="life-scene-emoji">{scene.emoji}</span><span><small>情境 {String(index + 1).padStart(2, "0")}</small><b>{scene.title}</b></span></button>)}</aside>
