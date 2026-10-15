@@ -233,6 +233,13 @@ export default function LifePhrases() {
             <div className="life-visual-copy"><strong>先看圖，再記住中文</strong><p>{visual.memory}</p><div className="life-object-tags">{visual.objects.map((item) => <span key={item}>{item}</span>)}</div></div>
           </section>
           <div className="life-lines">{currentScene.lines.map((line, index) => <article className={`life-line speaker-${line.speaker.toLowerCase()}`} key={`${currentScene.id}-${index}`}><span className="life-speaker">{line.speaker === "A" ? "甲" : "乙"}</span><div className="life-line-content"><strong className="life-chinese">{line.zh}</strong><span className="life-pinyin">{line.py}</span><span className="life-thai">{line.th}</span></div><button className="life-speak" aria-label={`播放中文：${line.zh}`} title="播放中文" onClick={() => speak(line.zh)}><Volume2 size={18} /></button></article>)}</div>
+          <section className="life-grammar-notes" aria-label="句型解析">
+            <h3>📝 句型解析 · อธิบายรูปประโยค</h3>
+            <article><strong>1. 想 + 動詞 · 想 + คำกริยา</strong><p>用來表達「อยาก…」例如：我想喝水。Wǒ xiǎng hē shuǐ. = ฉันอยากดื่มน้ำ</p></article>
+            <article><strong>2. 請問……？· ขอถามว่า…?</strong><p>禮貌地詢問資訊，例如：请问洗手间在哪里？= ขอถามว่าห้องน้ำอยู่ที่ไหน?</p></article>
+            <article><strong>3. 可以……嗎？· สามารถ…ได้ไหม?</strong><p>用來詢問是否允許或可行，例如：可以坐这里吗？= นั่งตรงนี้ได้ไหม?</p></article>
+            <p className="life-note-reminder">💡 小提醒：先理解泰文意思，再聽中文、跟讀拼音，最後嘗試不看翻譯自己說一次。</p>
+          </section>
           <div className="life-bottom-note"><MessageCircle size={17} /><span>學習建議：先聽中文，再看拼音跟讀，最後只看中文試著自己說。</span></div>
         </section>
       </section>
