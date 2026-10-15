@@ -8,3 +8,5 @@
 .life-scene-button .life-scene-emoji{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#f2f5ed;font-size:23px}
 .life-line{border-radius:12px;transition:background .18s}.life-line:hover{background:#fafbf7}
 @media(max-width:600px){.life-visual-memory{grid-template-columns:1fr;margin:14px 14px 6px;padding:12px}.life-visual-art{min-height:105px}.life-lines{padding:8px 14px}.life-bottom-note{margin:0 14px 16px}}
+
+.life-header-links{display:flex;align-items:center;gap:18px}.life-visual-art>span{display:block;text-align:center;line-height:1.7;letter-spacing:.08em;max-width:100%;overflow-wrap:anywhere}.life-visual-art{background:radial-gradient(circle at 50% 35%,#fff 0,#e5eee1 68%);box-shadow:inset 0 0 0 1px #dfe8dc}.life-visual-copy strong{display:block}.life-scene-button{min-height:66px}@media(max-width:520px){.life-header-links{gap:10px}.life-header-links .life-back{font-size:11px}}
