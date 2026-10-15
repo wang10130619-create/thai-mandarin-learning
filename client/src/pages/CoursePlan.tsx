@@ -1,20 +1,76 @@
 import { useEffect, useMemo, useState } from "react";
-import { BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, GraduationCap, Headphones, Lightbulb, MessageCircle, NotebookPen, Volume2 } from "lucide-react";
+import { BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, GraduationCap, Headphones, Lightbulb, MessageCircle, NotebookPen, Volume2, Play, Square } from "lucide-react";
 import { courseWeeks, type CourseWeek } from "../courseData";
 import "./CoursePlan.css";
 
 type Props = { weekOneComplete: boolean };
 
-function SpeakButton({ text }: { text: string }) {
-  const speak = () => {
-    if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "zh-CN";
-    utterance.rate = 0.82;
+function speakMandarin(text: string, onEnd?: () => void) {
+  if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return false;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "zh-CN";
+  utterance.rate = 0.78;
+  utterance.pitch = 1;
+  const chooseVoice = () => {
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find((item) => item.lang.toLowerCase() === "zh-cn")
+      ?? voices.find((item) => item.lang.toLowerCase().startsWith("zh"));
+    if (voice) utterance.voice = voice;
+    if (onEnd) utterance.onend = onEnd;
     window.speechSynthesis.speak(utterance);
   };
-  return <button className="week-speak-button" onClick={speak} aria-label={`ฟังเสียงภาษาจีน ${text}`} title="ฟังเสียงภาษาจีน"><Volume2 size={13} /></button>;
+  // Some browsers load voice lists asynchronously; retry after voiceschanged when needed.
+  if (window.speechSynthesis.getVoices().length) chooseVoice();
+  else {
+    let started = false;
+    const start = () => { if (started) return; started = true; window.speechSynthesis.removeEventListener?.("voiceschanged", start); chooseVoice(); };
+    window.speechSynthesis.addEventListener?.("voiceschanged", start, { once: true });
+    window.setTimeout(start, 500);
+  }
+  return true;
+}
+
+function SpeakButton({ text }: { text: string }) {
+  const [unavailable, setUnavailable] = useState(false);
+  const speak = () => setUnavailable(!speakMandarin(text));
+  return <span className="speak-button-wrap"><button className="week-speak-button" onClick={speak} aria-label={`ฟังเสียงภาษาจีน ${text}`} title="ฟังเสียงภาษาจีน"><Volume2 size={13} /></button>{unavailable && <small className="speech-unavailable" role="status">เบราว์เซอร์นี้ไม่รองรับเสียง</small>}</span>;
+}
+
+const dialogueScenes: Record<number, { emoji: string; place: string; detail: string }> = {
+  2: { emoji: "👋 🧑🏻‍🤝‍🧑🏻", place: "พบเพื่อนใหม่", detail: "ทักทาย ถามชื่อ และแนะนำตัว" },
+  3: { emoji: "📱 🔢", place: "แลกข้อมูลตัวเลข", detail: "ถามเบอร์โทรศัพท์และจดหมายเลข" },
+  4: { emoji: "☕ 🗓️", place: "นัดพบที่ร้านกาแฟ", detail: "ตกลงวันและเวลานัดหมาย" },
+  5: { emoji: "🛍️ 🧺", place: "ซื้อของในร้าน", detail: "ถามราคาและเลือกสินค้า" },
+  6: { emoji: "🍜 🥢", place: "สั่งอาหาร", detail: "สั่งเมนูและบอกความต้องการ" },
+  7: { emoji: "🏠 🪴", place: "พูดถึงบ้านและครอบครัว", detail: "แนะนำสมาชิกในครอบครัว" },
+  8: { emoji: "🗺️ 📍", place: "ถามทางในเมือง", detail: "ถามสถานที่และฟังคำบอกทาง" },
+  9: { emoji: "🚇 🧳", place: "เดินทางด้วยขนส่งสาธารณะ", detail: "ถามวิธีไปและเวลาที่ใช้" },
+  10: { emoji: "🏫 🕗", place: "เล่ากิจวัตรประจำวัน", detail: "พูดถึงงานและเวลาในแต่ละวัน" },
+  11: { emoji: "🩺 🏥", place: "ขอความช่วยเหลือ", detail: "บอกอาการพื้นฐานและขอความช่วยเหลือ" },
+  12: { emoji: "🌦️ ☂️", place: "พูดถึงอากาศ", detail: "บอกสภาพอากาศและกิจกรรมที่วางแผนไว้" },
+  13: { emoji: "🎉 🧑🏻‍🤝‍🧑🏻", place: "ทบทวนและสนทนา", detail: "นำประโยคที่เรียนมาใช้ในสถานการณ์จริง" },
+};
+
+function DialogueIllustration({ week }: { week: CourseWeek }) {
+  const scene = dialogueScenes[week.week] ?? { emoji: "💬 👥", place: week.topic, detail: week.goal };
+  return <div className="week-dialogue-scene" role="img" aria-label={`ภาพประกอบสถานการณ์ ${scene.place}`}>
+    <div className="scene-art"><span className="scene-sparkle">✦</span><span className="scene-emoji">{scene.emoji}</span><span className="scene-speech scene-speech-left">你好！</span><span className="scene-speech scene-speech-right">请问…</span></div>
+    <div className="scene-caption"><span className="scene-caption-tag">บทสนทนาจำลอง</span><strong>{scene.place}</strong><p>{scene.detail}</p></div>
+  </div>;
+}
+
+function DialogueAudioControls({ week }: { week: CourseWeek }) {
+  const [playing, setPlaying] = useState(false);
+  const [unsupported, setUnsupported] = useState(false);
+  const playNext = (index: number) => {
+    if (index >= week.dialogue.length) { setPlaying(false); return; }
+    const ok = speakMandarin(week.dialogue[index].zh, () => playNext(index + 1));
+    if (!ok) { setUnsupported(true); setPlaying(false); }
+  };
+  const start = () => { setUnsupported(false); setPlaying(true); playNext(0); };
+  const stop = () => { window.speechSynthesis?.cancel(); setPlaying(false); };
+  return <div className="dialogue-audio-controls"><button type="button" className="dialogue-play-all" onClick={playing ? stop : start}>{playing ? <Square size={15} /> : <Play size={15} fill="currentColor" />}{playing ? "หยุดบทสนทนา" : "ฟังบทสนทนาทั้งหมด"}</button><span>เสียงจีนกลาง · ฟังทีละประโยคพร้อมเว้นจังหวะ</span>{unsupported && <small role="status">อุปกรณ์นี้ไม่รองรับการอ่านออกเสียง กรุณาลอง Chrome หรือ Edge</small>}</div>;
 }
 
 function VocabularyGrid({ week }: { week: CourseWeek }) {
@@ -53,7 +109,7 @@ function WeekUnit({ week, complete, onToggle }: { week: CourseWeek; complete: bo
         <div className="week-pronunciation"><Volume2 size={16} /><div><b>เคล็ดลับการออกเสียง</b><p>{week.pronunciation}</p></div></div>
         <div className="week-block"><div className="week-block-title"><span className="week-block-icon"><BookOpen size={16} /></span><div><h4>คำศัพท์สำคัญ</h4><p>อ่านตัวจีน · พินอิน · ความหมายภาษาไทย</p></div></div><VocabularyGrid week={week} /></div>
         <div className="week-block"><div className="week-block-title"><span className="week-block-icon"><NotebookPen size={16} /></span><div><h4>ประโยคที่ใช้ได้จริง</h4><p>ลองพูดตาม แล้วเปลี่ยนข้อมูลให้เป็นเรื่องของคุณ</p></div></div><SentencePatterns week={week} /></div>
-        <div className="week-block"><div className="week-block-title"><span className="week-block-icon"><MessageCircle size={16} /></span><div><h4>บทสนทนาตัวอย่าง</h4><p>กดปุ่มรูปลำโพงเพื่อฟังเสียง แล้วลองพูดโดยไม่ดูคำแปล</p></div></div><div className="week-dialogue">{week.dialogue.map((line, index) => <div className="week-dialogue-line" key={`${index}-${line.zh}`}><span className={`dialogue-speaker speaker-${line.speaker.toLowerCase()}`}>{line.speaker}</span><div><div className="dialogue-zh"><strong>{line.zh}</strong><SpeakButton text={line.zh} /></div><span>{line.py}</span><small>{line.th}</small></div></div>)}</div></div>
+        <div className="week-block"><div className="week-block-title"><span className="week-block-icon"><MessageCircle size={16} /></span><div><h4>บทสนทนาพร้อมภาพประกอบและเสียง</h4><p>ดูสถานการณ์ อ่านพินอินและคำแปลไทย แล้วฟังทีละประโยคหรือฟังต่อเนื่องทั้งบท</p></div></div><DialogueIllustration week={week} /><DialogueAudioControls week={week} /><div className="week-dialogue">{week.dialogue.map((line, index) => <div className="week-dialogue-line" key={`${index}-${line.zh}`}><span className={`dialogue-speaker speaker-${line.speaker.toLowerCase()}`}>{line.speaker}</span><div><div className="dialogue-zh"><strong>{line.zh}</strong><SpeakButton text={line.zh} /></div><span>{line.py}</span><small>{line.th}</small></div></div>)}</div></div>
         <div className="week-block"><div className="week-block-title"><span className="week-block-icon"><Clock3 size={16} /></span><div><h4>แผนเรียน 2 ครั้ง</h4><p>แต่ละครั้งรวม 90 นาที ทำคนเดียวตามคำแนะนำได้</p></div></div><div className="session-grid"><LessonSession title="ครั้งที่ 1 · เรียนรู้และฝึกพื้นฐาน" activities={week.sessionA} /><LessonSession title="ครั้งที่ 2 · ใช้จริงและทบทวน" activities={week.sessionB} /></div></div>
         <div className="week-block week-quiz-block"><div className="week-block-title"><span className="week-block-icon"><CheckCircle2 size={16} /></span><div><h4>แบบทดสอบท้ายสัปดาห์</h4><p>เลือกคำตอบ แล้วตรวจดูคำอธิบาย</p></div></div><div className="week-quiz-list">{week.questions.map((item, questionIndex) => <fieldset className="week-quiz-question" key={item.question}><legend><span>{String(questionIndex + 1).padStart(2, "0")}</span>{item.question}</legend><div className="week-quiz-options">{item.options.map((option, optionIndex) => <label className={`week-quiz-option ${checked && optionIndex === item.answer ? "week-option-right" : checked && answers[questionIndex] === optionIndex ? "week-option-wrong" : ""}`} key={option}><input type="radio" name={`w${week.week}-q${questionIndex}`} checked={answers[questionIndex] === optionIndex} onChange={() => updateAnswer(questionIndex, optionIndex)} /><span>{option}</span>{checked && optionIndex === item.answer && <Check size={15} />}</label>)}</div>{checked && <p className="week-answer-explanation">{answers[questionIndex] === item.answer ? "ถูกต้อง · " : "คำตอบ · "}{item.why}</p>}</fieldset>)}</div><div className="week-quiz-footer"><button className="week-check-button" onClick={() => setChecked(true)}>ตรวจคำตอบ</button>{checked && <span className="week-score">ได้ {score} / {week.questions.length} ข้อ</span>}</div></div>
         <div className="week-homework"><div className="week-block-title"><span className="week-block-icon"><NotebookPen size={16} /></span><div><h4>ฝึกต่อที่บ้าน</h4><p>ทำครั้งละนิดเพื่อจำได้นานขึ้น</p></div></div><div className="week-homework-list">{week.homework.map((task, index) => <label key={task}><input type="checkbox" checked={homeworkDone.includes(index)} onChange={(event) => setHomeworkDone((items) => event.target.checked ? [...items, index] : items.filter((item) => item !== index))} /><span>{task}</span></label>)}</div></div>

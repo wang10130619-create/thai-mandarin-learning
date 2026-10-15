@@ -42,3 +42,13 @@ The static production site is generated in `dist/`. Deploy the contents of `dist
 - Speech playback uses the Web Speech API and requires a browser/OS with Chinese text-to-speech support. If no Mandarin voice is installed, playback availability may vary.
 - Learning progress is stored in the current browser using `localStorage`; it is not synced across devices.
 - Microphone practice requires browser permission and usually HTTPS or localhost.
+
+## Dialogue learning improvements
+
+The dialogue area now includes a scenario illustration card for each course week, with a short Thai description of the situation, per-line Chinese speech buttons, and a play-all control that reads the dialogue line by line. Speech uses the browser's built-in Mandarin speech synthesis (`zh-CN` where available); voice availability and voice quality depend on the learner's device/browser. No audio is uploaded or stored by this feature.
+
+### Local verification
+
+- Install dependencies with `npm install` (or use the repository's pnpm lockfile with pnpm).
+- Run `npm run build` to generate the static site in `dist/`.
+- Cloudflare Pages build settings for this repository: build command `npm run build`, output directory `dist`, root directory `/`.
