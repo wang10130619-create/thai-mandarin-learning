@@ -162,8 +162,6 @@ export const extraScenes: ExtraScene[] = [
     {speaker:"A",zh:"连上了，谢谢！",py:"Lián shàng le, xièxie!",th:"เชื่อมต่อได้แล้ว ขอบคุณ!"},
     {speaker:"B",zh:"不客气，有问题再告诉我。",py:"Bú kèqi, yǒu wèntí zài gàosu wǒ.",th:"ไม่เป็นไร มีปัญหาก็บอกฉันได้"}
   ]},
-,
-
   { id:"buy-drink",emoji:"🧋",title:"買飲料與調整甜度",setting:"在飲料店點飲料並指定甜度與冰量",visual:"🧋 🧊 🍯",memory:"先說想要的飲料，再選甜度和冰量。",objects:["🧋 我要一杯…","🍯 少糖","🧊 少冰"],lines:[
     {speaker:"A",zh:"你好，我想要一杯奶茶。",py:"Nǐ hǎo, wǒ xiǎng yào yì bēi nǎichá.",th:"สวัสดี ฉันขอชานมหนึ่งแก้ว"},
     {speaker:"B",zh:"好的，甜度要多少？",py:"Hǎo de, tiándù yào duōshao?",th:"ได้ค่ะ/ครับ ต้องการความหวานระดับไหน?"},
