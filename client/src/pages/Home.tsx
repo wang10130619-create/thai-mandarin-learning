@@ -108,7 +108,7 @@ export default function Home() {
   return <div className="course-site">
     <header className="site-header">
       <a className="wordmark" href="#top" aria-label="กลับไปด้านบน"><span className="brand-mark">中</span><span>จีนเริ่มต้น<span className="wordmark-sub">เรียนรู้ทีละก้าว</span></span></a>
-      <nav className="top-nav" aria-label="เมนูหลัก"><a href="#all-weeks">หลักสูตร 12 สัปดาห์</a><a href="/life-phrases">生活用語 · บทสนทนาในชีวิตประจำวัน</a><a href="#tones">ฝึกเสียง</a><a href="#practice">ทดสอบตัวเอง</a></nav>
+      <nav className="top-nav" aria-label="เมนูหลัก"><a href="#all-weeks">หลักสูตร 12 สัปดาห์</a><a href="/life-phrases">生活用語 · บทสนทนาในชีวิตประจำวัน</a><a href="/vocabulary">单词 · คำศัพท์และ造句</a><a href="#tones">ฝึกเสียง</a><a href="#practice">ทดสอบตัวเอง</a></nav>
       <button className="print-button" onClick={() => window.print()}><BookOpen size={16} /> พิมพ์บทเรียน</button>
     </header>
 
