@@ -162,5 +162,55 @@ export const extraScenes: ExtraScene[] = [
     {speaker:"A",zh:"连上了，谢谢！",py:"Lián shàng le, xièxie!",th:"เชื่อมต่อได้แล้ว ขอบคุณ!"},
     {speaker:"B",zh:"不客气，有问题再告诉我。",py:"Bú kèqi, yǒu wèntí zài gàosu wǒ.",th:"ไม่เป็นไร มีปัญหาก็บอกฉันได้"}
   ]},
+  { id:"buy-drink",emoji:"🧋",title:"買飲料與調整甜度",setting:"在飲料店點飲料並指定甜度與冰量",visual:"🧋 🧊 🍯",memory:"先說想要的飲料，再選甜度和冰量。",objects:["🧋 我要一杯…","🍯 少糖","🧊 少冰"],lines:[
+    {speaker:"A",zh:"你好，我想要一杯奶茶。",py:"Nǐ hǎo, wǒ xiǎng yào yì bēi nǎichá.",th:"สวัสดี ฉันขอชานมหนึ่งแก้ว"},
+    {speaker:"B",zh:"好的，甜度要多少？",py:"Hǎo de, tiándù yào duōshao?",th:"ได้ค่ะ/ครับ ต้องการความหวานระดับไหน?"},
+    {speaker:"A",zh:"少糖，谢谢。",py:"Shǎo táng, xièxie.",th:"หวานน้อย ขอบคุณ"},
+    {speaker:"B",zh:"冰块要多一点还是少一点？",py:"Bīngkuài yào duō yìdiǎn háishi shǎo yìdiǎn?",th:"ต้องการน้ำแข็งมากหรือน้อย?"},
+    {speaker:"A",zh:"少冰就好。",py:"Shǎo bīng jiù hǎo.",th:"น้ำแข็งน้อยก็พอ"},
+    {speaker:"B",zh:"还要加珍珠吗？",py:"Hái yào jiā zhēnzhū ma?",th:"ต้องการเพิ่มไข่มุกไหม?"},
+    {speaker:"A",zh:"不用了，这样就可以。",py:"Bú yòng le, zhèyàng jiù kěyǐ.",th:"ไม่ต้องแล้ว แบบนี้ก็ได้"},
+    {speaker:"B",zh:"好的，请稍等。",py:"Hǎo de, qǐng shāo děng.",th:"ได้เลย กรุณารอสักครู่"}
+  ]},
+  { id:"laundry",emoji:"🧺",title:"洗衣店詢問服務",setting:"在自助洗衣店詢問洗衣與烘乾方式",visual:"🧺 👕 🫧",memory:"詢問價格、所需時間與付款方式。",objects:["🧺 洗衣服","⏱️ 多久","💳 怎么付款"],lines:[
+    {speaker:"A",zh:"你好，请问洗衣服多少钱？",py:"Nǐ hǎo, qǐngwèn xǐ yīfu duōshao qián?",th:"สวัสดี ขอถามว่าซักผ้าราคาเท่าไร?"},
+    {speaker:"B",zh:"一桶三十块钱。",py:"Yì tǒng sānshí kuài qián.",th:"หนึ่งถัง 30 หยวน"},
+    {speaker:"A",zh:"洗一次需要多久？",py:"Xǐ yí cì xūyào duō jiǔ?",th:"ซักหนึ่งรอบใช้เวลานานเท่าไร?"},
+    {speaker:"B",zh:"大概四十分钟。",py:"Dàgài sìshí fēnzhōng.",th:"ประมาณ 40 นาที"},
+    {speaker:"A",zh:"可以烘干吗？",py:"Kěyǐ hōnggān ma?",th:"อบแห้งได้ไหม?"},
+    {speaker:"B",zh:"可以，烘干要另外付钱。",py:"Kěyǐ, hōnggān yào lìngwài fù qián.",th:"ได้ การอบแห้งต้องจ่ายเพิ่ม"},
+    {speaker:"A",zh:"我在哪里付款？",py:"Wǒ zài nǎli fù qián?",th:"ฉันจ่ายเงินที่ไหน?"},
+    {speaker:"B",zh:"请在机器旁边扫码。",py:"Qǐng zài jīqì pángbiān sǎo mǎ.",th:"กรุณาสแกนคิวอาร์โค้ดข้างเครื่อง"}
+  ]},
+  { id:"birthday",emoji:"🎂",title:"生日祝福與送禮",setting:"朋友生日聚會時送上祝福",visual:"🎂 🎁 🎉",memory:"祝福時可說「祝你……」，收到禮物要說謝謝。",objects:["🎂 生日快乐","🎁 送给你","🙏 谢谢"],lines:[
+    {speaker:"A",zh:"生日快乐！这是送给你的礼物。",py:"Shēngrì kuàilè! Zhè shì sòng gěi nǐ de lǐwù.",th:"สุขสันต์วันเกิด! นี่คือของขวัญสำหรับคุณ"},
+    {speaker:"B",zh:"谢谢！你太客气了。",py:"Xièxie! Nǐ tài kèqi le.",th:"ขอบคุณ! คุณเกรงใจเกินไปแล้ว"},
+    {speaker:"A",zh:"希望你喜欢。",py:"Xīwàng nǐ xǐhuan.",th:"หวังว่าคุณจะชอบ"},
+    {speaker:"B",zh:"我很喜欢，真漂亮！",py:"Wǒ hěn xǐhuan, zhēn piàoliang!",th:"ฉันชอบมาก สวยจริง ๆ!"},
+    {speaker:"A",zh:"祝你每天都开心。",py:"Zhù nǐ měitiān dōu kāixīn.",th:"ขอให้คุณมีความสุขทุกวัน"},
+    {speaker:"B",zh:"谢谢你的祝福。",py:"Xièxie nǐ de zhùfú.",th:"ขอบคุณสำหรับคำอวยพร"},
+    {speaker:"A",zh:"我们一起拍张照片吧。",py:"Wǒmen yìqǐ pāi zhāng zhàopiàn ba.",th:"พวกเราถ่ายรูปด้วยกันสักรูปเถอะ"},
+    {speaker:"B",zh:"好啊，大家一起！",py:"Hǎo a, dàjiā yìqǐ!",th:"ได้เลย ทุกคนมาถ่ายด้วยกัน!"}
+  ]},
+  { id:"appointment",emoji:"📅",title:"預約理髮時間",setting:"打電話向理髮店預約時間",visual:"💇 📅 ✂️",memory:"預約時說明日期、時間與服務項目。",objects:["📅 预约时间","🕒 下午三点","✂️ 理发"],lines:[
+    {speaker:"A",zh:"你好，我想预约理发。",py:"Nǐ hǎo, wǒ xiǎng yùyuē lǐfà.",th:"สวัสดี ฉันต้องการจองเวลาตัดผม"},
+    {speaker:"B",zh:"请问您想约哪一天？",py:"Qǐngwèn nín xiǎng yuē nǎ yì tiān?",th:"ขอถามว่าคุณต้องการนัดวันไหน?"},
+    {speaker:"A",zh:"我想约明天下午。",py:"Wǒ xiǎng yuē míngtiān xiàwǔ.",th:"ฉันอยากนัดพรุ่งนี้ช่วงบ่าย"},
+    {speaker:"B",zh:"下午三点可以吗？",py:"Xiàwǔ sān diǎn kěyǐ ma?",th:"บ่ายสามโมงได้ไหม?"},
+    {speaker:"A",zh:"可以，大概需要多久？",py:"Kěyǐ, dàgài xūyào duō jiǔ?",th:"ได้ค่ะ/ครับ ใช้เวลาประมาณเท่าไร?"},
+    {speaker:"B",zh:"大约三十分钟。",py:"Dàyuē sānshí fēnzhōng.",th:"ประมาณ 30 นาที"},
+    {speaker:"A",zh:"好的，明天见。",py:"Hǎo de, míngtiān jiàn.",th:"ตกลง แล้วพบกันพรุ่งนี้"},
+    {speaker:"B",zh:"好的，明天见！",py:"Hǎo de, míngtiān jiàn!",th:"ได้เลย แล้วพบกันพรุ่งนี้!"}
+  ]},
+  { id:"at-home",emoji:"🏠",title:"在家招待朋友",setting:"朋友來家裡拜訪，主人準備飲料",visual:"🏠 🥤 🛋️",memory:"招待客人時，可詢問對方想喝什麼、請對方坐下。",objects:["🪑 请坐","🥤 喝点什么","😊 别客气"],lines:[
+    {speaker:"A",zh:"欢迎来我家！请进。",py:"Huānyíng lái wǒ jiā! Qǐng jìn.",th:"ยินดีต้อนรับสู่บ้านฉัน เชิญเข้ามา"},
+    {speaker:"B",zh:"谢谢，打扰你了。",py:"Xièxie, dǎrǎo nǐ le.",th:"ขอบคุณที่รบกวนคุณ"},
+    {speaker:"A",zh:"别客气，请坐。",py:"Bié kèqi, qǐng zuò.",th:"ไม่ต้องเกรงใจ เชิญนั่ง"},
+    {speaker:"A",zh:"你想喝点什么？",py:"Nǐ xiǎng hē diǎn shénme?",th:"คุณอยากดื่มอะไรสักหน่อยไหม?"},
+    {speaker:"B",zh:"有茶吗？",py:"Yǒu chá ma?",th:"มีชาไหม?"},
+    {speaker:"A",zh:"有，我给你倒一杯。",py:"Yǒu, wǒ gěi nǐ dào yì bēi.",th:"มี ฉันรินให้คุณหนึ่งแก้ว"},
+    {speaker:"B",zh:"谢谢，你家很舒服。",py:"Xièxie, nǐ jiā hěn shūfu.",th:"ขอบคุณ บ้านคุณน่าอยู่มาก"},
+    {speaker:"A",zh:"你喜欢就好！",py:"Nǐ xǐhuan jiù hǎo!",th:"คุณชอบก็ดีแล้ว!"}
+  ]},
 
 ];
