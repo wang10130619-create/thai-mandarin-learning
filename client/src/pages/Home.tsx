@@ -111,6 +111,10 @@ export default function Home() {
       <nav className="top-nav" aria-label="เมนูหลัก"><a href="#all-weeks">หลักสูตร 12 สัปดาห์</a><a href="/life-phrases">生活用語 · บทสนทนาในชีวิตประจำวัน</a><a href="/vocabulary">单词 · คำศัพท์และ造句</a><a href="#tones">ฝึกเสียง</a><a href="#practice">ทดสอบตัวเอง</a></nav>
       <button className="print-button" onClick={() => window.print()}><BookOpen size={16} /> พิมพ์บทเรียน</button>
     </header>
+    <nav className="mobile-quick-nav" aria-label="快速學習選單">
+      <a href="/life-phrases">💬 生活情境 <span>บทสนทนา</span></a>
+      <a href="/vocabulary">📚 生活單詞 <span>คำศัพท์</span></a>
+    </nav>
 
     <main id="top">
       <section className="hero-section">
