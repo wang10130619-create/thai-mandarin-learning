@@ -17,3 +17,5 @@
 .speech-play-button,.group-speak-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #cddbd0;background:#edf4ec;color:#145d55;border-radius:7px;padding:8px 11px;margin-top:9px;font-size:10px;font-weight:700}.speech-play-button:hover,.group-speak-button:hover{background:#dcebe0}
 .audio-copy>small{display:block;color:#a65e4c;margin-top:6px;font-size:10px}
 @media(max-width:700px){.hero-illustration{min-height:220px}.dialogue-illustration{height:130px;font-size:44px}.tone-fallback{min-height:100px;padding:12px 5px}.tone-fallback b{font-size:25px}}
+
+.mobile-quick-nav{display:none}@media(max-width:700px){.mobile-quick-nav{display:flex;gap:10px;padding:10px 14px;overflow-x:auto;background:#fffefa;border-bottom:1px solid #e3e6dc;position:relative;z-index:5}.mobile-quick-nav a{display:flex;align-items:center;gap:6px;flex:1;justify-content:center;min-width:max-content;padding:10px 13px;border:1px solid #dce6db;border-radius:10px;background:#f1f6ee;color:#245348;text-decoration:none;font-size:12px;font-weight:700}.mobile-quick-nav a span{font-size:10px;font-weight:500;color:#71867a}}
