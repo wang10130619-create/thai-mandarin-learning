@@ -7,8 +7,9 @@ import { extraScenes } from "./lifePhrasesExtra";
 type Line = { speaker: "A" | "B"; zh: string; py: string; th: string };
 type Scene = { id: string; emoji: string; title: string; setting: string; lines: Line[]; visual?: string; memory?: string; objects?: string[] };
 const sceneTitleTh: Record<string,string> = { greeting:"การทักทายและแนะนำตัว", restaurant:"การสั่งอาหารในร้านอาหาร", shopping:"การซื้อของและถามราคา", directions:"การถามทาง", transport:"การเดินทาง", hotel:"การเข้าพักโรงแรม", hospital:"การไปโรงพยาบาล", pharmacy:"การซื้อยา", weather:"การพูดคุยเรื่องอากาศ", family:"การพูดคุยเรื่องครอบครัว", hobbies:"งานอดิเรกและเวลาว่าง", phone:"การคุยโทรศัพท์", appointment:"การนัดหมาย", cafe:"การสั่งเครื่องดื่ม", market:"การซื้อของที่ตลาด" };
+const sceneSettingTh: Record<string,string> = { greeting:"ใช้เมื่อพบเพื่อนใหม่และต้องการแนะนำตัวเป็นภาษาจีน", restaurant:"ฝึกสั่งอาหาร ถามเมนู และบอกสิ่งที่ต้องการ", shopping:"ฝึกถามราคา ต่อรอง และเลือกสินค้า" };
 const sceneThaiTitle = (scene: Scene) => sceneTitleTh[scene.id] || "บทสนทนาที่ใช้ได้ในชีวิตประจำวัน";
-const sceneThaiSetting = (scene: Scene) => ({greeting:"ใช้เมื่อพบเพื่อนใหม่และต้องการแนะนำตัวเป็นภาษาจีน",restaurant:"ฝึกสั่งอาหาร ถามเมนู และบอกสิ่งที่ต้องการ",shopping:"ฝึกถามราคา ต่อรอง และเลือกสินค้า"}[scene.id] || "อ่านคำแปลภาษาไทยก่อน แล้วฟังและฝึกพูดประโยคภาษาจีนตามสถานการณ์");
+const sceneThaiSetting = (scene: Scene) => sceneSettingTh[scene.id] || "อ่านคำแปลภาษาไทยก่อน แล้วฟังและฝึกพูดประโยคภาษาจีนตามสถานการณ์";
 
 const baseScenes: Scene[] = [
   { id: "greeting", emoji: "👋", title: "打招呼與自我介紹", setting: "在語言課上第一次遇見新朋友", lines: [
