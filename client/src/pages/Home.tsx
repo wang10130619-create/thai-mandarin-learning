@@ -42,7 +42,7 @@ const quizQuestions = [
 function AudioLesson({ title, detail }: { title: string; detail: string; src?: string }) {
   const [unsupported, setUnsupported] = useState(false);
   const play = () => { if (!speakChinese(lessonSpeech[title] || "你好！")) setUnsupported(true); };
-  return <div className="audio-lesson"><div className="audio-icon"><Volume2 size={19} /></div><div className="audio-copy"><strong>{title}</strong><span>{detail}</span><button type="button" className="speech-play-button" onClick={play}><Volume2 size={15} /> ฟังเสียงภาษาจีน</button>{unsupported && <small role="status">此瀏覽器不支援語音合成，請改用支援中文語音的瀏覽器。</small>}</div></div>;
+  return <div className="audio-lesson"><div className="audio-icon"><Volume2 size={19} /></div><div className="audio-copy"><strong>{title}</strong><span>{detail}</span><button type="button" className="speech-play-button" onClick={play}><Volume2 size={15} /> ฟังเสียงภาษาจีน</button>{unsupported && <small role="status">เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง โปรดลองใช้เบราว์เซอร์ที่รองรับเสียงภาษาจีน</small>}</div></div>;
 }
 
 function SectionTitle({ eyebrow, title, detail }: { eyebrow: string; title: string; detail?: string }) {
@@ -111,7 +111,7 @@ export default function Home() {
       <nav className="top-nav" aria-label="เมนูหลัก"><a href="#all-weeks">หลักสูตร 12 สัปดาห์</a><a href="/life-phrases">生活用語 · บทสนทนาในชีวิตประจำวัน</a><a href="/vocabulary">单词 · คำศัพท์และ造句</a><a href="#tones">ฝึกเสียง</a><a href="#practice">ทดสอบตัวเอง</a></nav>
       <button className="print-button" onClick={() => window.print()}><BookOpen size={16} /> พิมพ์บทเรียน</button>
     </header>
-    <nav className="mobile-quick-nav" aria-label="快速學習選單">
+    <nav className="mobile-quick-nav" aria-label="เมนูเรียนรู้อย่างรวดเร็ว">
       <a href="/life-phrases">💬 生活情境 <span>บทสนทนา</span></a>
       <a href="/vocabulary">📚 生活單詞 <span>คำศัพท์</span></a>
     </nav>

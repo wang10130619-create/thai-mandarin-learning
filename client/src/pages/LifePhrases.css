@@ -11,3 +11,11 @@
 
 .life-header-links{display:flex;align-items:center;gap:18px}.life-visual-art>span{display:block;text-align:center;line-height:1.7;letter-spacing:.08em;max-width:100%;overflow-wrap:anywhere}.life-visual-art{background:radial-gradient(circle at 50% 35%,#fff 0,#e5eee1 68%);box-shadow:inset 0 0 0 1px #dfe8dc}.life-visual-copy strong{display:block}.life-scene-button{min-height:66px}@media(max-width:520px){.life-header-links{gap:10px}.life-header-links .life-back{font-size:11px}}
 .life-grammar-notes{margin:18px 20px 16px;padding:20px;border:1px solid #dfe8da;border-radius:14px;background:#f8faf5;color:#365a46}.life-grammar-notes h3{margin:0 0 13px;font-size:16px;color:#28523d}.life-grammar-notes article{padding:11px 0;border-top:1px solid #e3e9df}.life-grammar-notes article strong{display:block;font-size:13px;color:#345d43}.life-grammar-notes article p,.life-note-reminder{font-size:12px;line-height:1.8;color:#687e6c;margin:6px 0 0}.life-note-reminder{padding:10px 12px;background:#edf3e9;border-radius:9px}.life-thai{line-height:1.7}@media(max-width:600px){.life-grammar-notes{margin:12px 14px;padding:14px}.life-grammar-notes h3{font-size:15px}}
+
+/* Thai-first learning guidance and responsive readability */
+.life-ui-thai,.life-scene-thai,.life-scene-thai-heading{display:block;color:#4f7760;font-size:12px;line-height:1.7;margin-top:4px}
+.life-scene-thai{font-size:11px;color:#748579;margin-top:3px}.life-scene-thai-heading{font-size:15px;font-weight:650;margin:4px 0 8px}
+.life-sidebar h2 .life-ui-thai{font-weight:400;font-size:11px}.life-visual-copy .life-ui-thai{margin:0 0 7px}
+.life-grammar-notes article strong{line-height:1.7}.life-grammar-notes article p{font-size:13px}
+@media(max-width:850px){.life-scene-button{align-items:flex-start}.life-scene-button>span:last-child{min-width:0}.life-scene-button b{overflow-wrap:anywhere}}
+@media(max-width:520px){.life-main{padding-left:12px;padding-right:12px}.life-hero h1{font-size:30px}.life-hero>p{font-size:13px}.life-sidebar h2{font-size:14px}.life-scene-button{min-height:75px}.life-scene-button b{font-size:12px}.life-scene-thai{font-size:10px;line-height:1.5}.life-dialogue-heading p{font-size:12px}.life-audio-actions button{font-size:11px;padding:10px 7px}.life-visual-copy strong{font-size:15px}.life-visual-copy p{font-size:12px}}
