@@ -6,6 +6,9 @@ import { extraScenes } from "./lifePhrasesExtra";
 
 type Line = { speaker: "A" | "B"; zh: string; py: string; th: string };
 type Scene = { id: string; emoji: string; title: string; setting: string; lines: Line[]; visual?: string; memory?: string; objects?: string[] };
+const sceneTitleTh: Record<string,string> = { greeting:"การทักทายและแนะนำตัว", restaurant:"การสั่งอาหารในร้านอาหาร", shopping:"การซื้อของและถามราคา", directions:"การถามทาง", transport:"การเดินทาง", hotel:"การเข้าพักโรงแรม", hospital:"การไปโรงพยาบาล", pharmacy:"การซื้อยา", weather:"การพูดคุยเรื่องอากาศ", family:"การพูดคุยเรื่องครอบครัว", hobbies:"งานอดิเรกและเวลาว่าง", phone:"การคุยโทรศัพท์", appointment:"การนัดหมาย", cafe:"การสั่งเครื่องดื่ม", market:"การซื้อของที่ตลาด" };
+const sceneThaiTitle = (scene: Scene) => sceneTitleTh[scene.id] || "บทสนทนาที่ใช้ได้ในชีวิตประจำวัน";
+const sceneThaiSetting = (scene: Scene) => ({greeting:"ใช้เมื่อพบเพื่อนใหม่และต้องการแนะนำตัวเป็นภาษาจีน",restaurant:"ฝึกสั่งอาหาร ถามเมนู และบอกสิ่งที่ต้องการ",shopping:"ฝึกถามราคา ต่อรอง และเลือกสินค้า"}[scene.id] || "อ่านคำแปลภาษาไทยก่อน แล้วฟังและฝึกพูดประโยคภาษาจีนตามสถานการณ์");
 
 const baseScenes: Scene[] = [
   { id: "greeting", emoji: "👋", title: "打招呼與自我介紹", setting: "在語言課上第一次遇見新朋友", lines: [
@@ -223,24 +226,24 @@ export default function LifePhrases() {
         <div className="life-stats"><span><b>{scenes.length}</b> สถานการณ์</span><span><b>{scenes.reduce((n, s) => n + s.lines.length, 0)}</b> ประโยคพร้อมเสียง</span><span><b>初学者</b> เริ่มเรียนได้ทันที</span></div>
       </section>
       <section className="life-workspace">
-        <aside className="life-sidebar"><h2>เลือกสถานการณ์</h2>{scenes.map((scene, index) => <button key={scene.id} className={activeScene === scene.id ? "life-scene-button active" : "life-scene-button"} onClick={() => { stop(); setActiveScene(scene.id); setAudioError(""); }}><span className="life-scene-emoji">{scene.emoji}</span><span><small>情境 {String(index + 1).padStart(2, "0")}</small><b>{scene.title}</b></span></button>)}</aside>
+        <aside className="life-sidebar"><h2>เลือกสถานการณ์ <small className="life-ui-thai">เลือกหัวข้อที่ต้องการฝึก</small></h2>{scenes.map((scene, index) => <button key={scene.id} className={activeScene === scene.id ? "life-scene-button active" : "life-scene-button"} onClick={() => { stop(); setActiveScene(scene.id); setAudioError(""); }}><span className="life-scene-emoji">{scene.emoji}</span><span><small>สถานการณ์ {String(index + 1).padStart(2, "0")}</small><b>{scene.title}</b><span className="life-scene-thai">{sceneThaiTitle(scene)}</span></span></button>)}</aside>
         <section className="life-dialogue">
-          <div className="life-dialogue-heading"><div><span className="life-eyebrow">情境 · {String(scenes.findIndex((scene) => scene.id === activeScene) + 1).padStart(2, "0")}</span><h2>{currentScene.emoji} {currentScene.title}</h2><p>{currentScene.setting}</p></div><div className="life-audio-actions"><button onClick={playAll} className="life-play-all"><Play size={15} /> 播放整段</button><button onClick={stop} className="life-stop" disabled={!playing}><Square size={13} /> 停止</button></div></div>
+          <div className="life-dialogue-heading"><div><span className="life-eyebrow">สถานการณ์ · {String(scenes.findIndex((scene) => scene.id === activeScene) + 1).padStart(2, "0")}</span><h2>{currentScene.emoji} {currentScene.title}</h2><p className="life-scene-thai-heading">{sceneThaiTitle(currentScene)}</p><p>{currentScene.setting}</p><p className="life-ui-thai">{sceneThaiSetting(currentScene)}</p></div><div className="life-audio-actions"><button onClick={playAll} className="life-play-all"><Play size={15} /> เล่นบทสนทนาทั้งหมด</button><button onClick={stop} className="life-stop" disabled={!playing}><Square size={13} /> หยุด</button></div></div>
           {audioError && <p className="life-audio-error" role="status">{audioError}</p>}
-          {!voicesReady && !audioError && <p className="life-audio-hint">正在載入語音；若沒有中文語音，播放功能會使用瀏覽器可用的中文語音。</p>}
+          {!voicesReady && !audioError && <p className="life-audio-hint">กำลังโหลดเสียง หากไม่มีเสียงภาษาจีน ระบบจะใช้เสียงภาษาจีนที่เบราว์เซอร์รองรับ</p>}
           <section className="life-visual-memory" aria-label="情境圖像記憶">
-            <div className="life-visual-art"><span>{visual.icon}</span><small>情境圖像 · Visual memory</small></div>
-            <div className="life-visual-copy"><strong>先看圖，再記住中文</strong><p>{visual.memory}</p><div className="life-object-tags">{visual.objects.map((item) => <span key={item}>{item}</span>)}</div></div>
+            <div className="life-visual-art"><span>{visual.icon}</span><small>ภาพช่วยจำ · ภาพประกอบสถานการณ์</small></div>
+            <div className="life-visual-copy"><strong>ดูภาพก่อน แล้วค่อยเรียนภาษาจีน</strong><p>{visual.memory}</p><div className="life-object-tags">{visual.objects.map((item) => <span key={item}>{item}</span>)}</div></div>
           </section>
           <div className="life-lines">{currentScene.lines.map((line, index) => <article className={`life-line speaker-${line.speaker.toLowerCase()}`} key={`${currentScene.id}-${index}`}><span className="life-speaker">{line.speaker === "A" ? "甲" : "乙"}</span><div className="life-line-content"><strong className="life-chinese">{line.zh}</strong><span className="life-pinyin">{line.py}</span><span className="life-thai">{line.th}</span></div><button className="life-speak" aria-label={`播放中文：${line.zh}`} title="播放中文" onClick={() => speak(line.zh)}><Volume2 size={18} /></button></article>)}</div>
           <section className="life-grammar-notes" aria-label="句型解析">
             <h3>📝 句型解析 · อธิบายรูปประโยค</h3>
-            <article><strong>1. 想 + 動詞 · 想 + คำกริยา</strong><p>用來表達「อยาก…」例如：我想喝水。Wǒ xiǎng hē shuǐ. = ฉันอยากดื่มน้ำ</p></article>
-            <article><strong>2. 請問……？· ขอถามว่า…?</strong><p>禮貌地詢問資訊，例如：请问洗手间在哪里？= ขอถามว่าห้องน้ำอยู่ที่ไหน?</p></article>
-            <article><strong>3. 可以……嗎？· สามารถ…ได้ไหม?</strong><p>用來詢問是否允許或可行，例如：可以坐这里吗？= นั่งตรงนี้ได้ไหม?</p></article>
-            <p className="life-note-reminder">💡 小提醒：先理解泰文意思，再聽中文、跟讀拼音，最後嘗試不看翻譯自己說一次。</p>
+            <article><strong>1. 想 + 動詞 · 想 + คำกริยา</strong><p>ใช้บอกความต้องการ แปลว่า “อยาก…” เช่น 我想喝水。Wǒ xiǎng hē shuǐ. = ฉันอยากดื่มน้ำ</p></article>
+            <article><strong>2. 請問……？· ขอถามว่า…?</strong><p>ใช้ถามข้อมูลอย่างสุภาพ เช่น 请问洗手间在哪里？= ขอถามว่าห้องน้ำอยู่ที่ไหน?</p></article>
+            <article><strong>3. 可以……嗎？· สามารถ…ได้ไหม?</strong><p>ใช้ถามว่าสามารถทำสิ่งนั้นได้หรือไม่ เช่น 可以坐这里吗？= นั่งตรงนี้ได้ไหม?</p></article>
+            <p className="life-note-reminder">💡 เคล็ดลับ: เข้าใจความหมายภาษาไทยก่อน จากนั้นฟังภาษาจีน อ่านพินอินตาม และลองพูดเองโดยไม่ดูคำแปล</p>
           </section>
-          <div className="life-bottom-note"><MessageCircle size={17} /><span>學習建議：先聽中文，再看拼音跟讀，最後只看中文試著自己說。</span></div>
+          <div className="life-bottom-note"><MessageCircle size={17} /><span>วิธีฝึก: ฟังภาษาจีนก่อน อ่านพินอินและพูดตาม แล้วลองพูดอีกครั้งโดยดูเฉพาะตัวอักษรจีน</span></div>
         </section>
       </section>
     </main>
