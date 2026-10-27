@@ -234,14 +234,14 @@ export default function LifePhrases() {
           {!voicesReady && !audioError && <p className="life-audio-hint">กำลังโหลดเสียง หากไม่มีเสียงภาษาจีน ระบบจะใช้เสียงภาษาจีนที่เบราว์เซอร์รองรับ</p>}
           <section className="life-visual-memory" aria-label="情境圖像記憶">
             <div className="life-visual-art"><span>{visual.icon}</span><small>ภาพช่วยจำ · ภาพประกอบสถานการณ์</small></div>
-            <div className="life-visual-copy"><strong>ดูภาพก่อน แล้วค่อยเรียนภาษาจีน</strong><p>{visual.memory}</p><div className="life-object-tags">{visual.objects.map((item) => <span key={item}>{item}</span>)}</div></div>
+            <div className="life-visual-copy"><strong>ดูภาพก่อน แล้วค่อยเรียนภาษาจีน</strong><p>{visual.memory}</p><div className="life-object-tags">{visual.objects.map((item) => <button type="button" key={item} onClick={() => speak(item.replace(/^[^\u4e00-\u9fff]+/, "").split(/[·=]/)[0].trim())} title="ฟังเสียงภาษาจีน">{item} <Volume2 size={12}/></button>)}</div></div>
           </section>
           <div className="life-lines">{currentScene.lines.map((line, index) => <article className={`life-line speaker-${line.speaker.toLowerCase()}`} key={`${currentScene.id}-${index}`}><span className="life-speaker">{line.speaker === "A" ? "甲" : "乙"}</span><div className="life-line-content"><strong className="life-chinese">{line.zh}</strong><span className="life-pinyin">{line.py}</span><span className="life-thai">{line.th}</span></div><button className="life-speak" aria-label={`播放中文：${line.zh}`} title="播放中文" onClick={() => speak(line.zh)}><Volume2 size={18} /></button></article>)}</div>
           <section className="life-grammar-notes" aria-label="句型解析">
             <h3>📝 句型解析 · อธิบายรูปประโยค</h3>
-            <article><strong>1. 想 + 動詞 · 想 + คำกริยา</strong><p>ใช้บอกความต้องการ แปลว่า “อยาก…” เช่น 我想喝水。Wǒ xiǎng hē shuǐ. = ฉันอยากดื่มน้ำ</p></article>
-            <article><strong>2. 請問……？· ขอถามว่า…?</strong><p>ใช้ถามข้อมูลอย่างสุภาพ เช่น 请问洗手间在哪里？= ขอถามว่าห้องน้ำอยู่ที่ไหน?</p></article>
-            <article><strong>3. 可以……嗎？· สามารถ…ได้ไหม?</strong><p>ใช้ถามว่าสามารถทำสิ่งนั้นได้หรือไม่ เช่น 可以坐这里吗？= นั่งตรงนี้ได้ไหม?</p></article>
+            <article><strong>1. 想 + 動詞 · 想 + คำกริยา</strong><p>ใช้บอกความต้องการ แปลว่า “อยาก…” เช่น <button type="button" className="life-example-speak" onClick={() => speak("我想喝水。")} aria-label="ฟังประโยค 我想喝水"><Volume2 size={13}/> 我想喝水。</button> = ฉันอยากดื่มน้ำ</p></article>
+            <article><strong>2. 請問……？· ขอถามว่า…?</strong><p>ใช้ถามข้อมูลอย่างสุภาพ เช่น <button type="button" className="life-example-speak" onClick={() => speak("请问洗手间在哪里？")} aria-label="ฟังประโยค 请问洗手间在哪里"><Volume2 size={13}/> 请问洗手间在哪里？</button> = ขอถามว่าห้องน้ำอยู่ที่ไหน?</p></article>
+            <article><strong>3. 可以……嗎？· สามารถ…ได้ไหม?</strong><p>ใช้ถามว่าสามารถทำสิ่งนั้นได้หรือไม่ เช่น <button type="button" className="life-example-speak" onClick={() => speak("可以坐这里吗？")} aria-label="ฟังประโยค 可以坐这里吗"><Volume2 size={13}/> 可以坐这里吗？</button> = นั่งตรงนี้ได้ไหม?</p></article>
             <p className="life-note-reminder">💡 เคล็ดลับ: เข้าใจความหมายภาษาไทยก่อน จากนั้นฟังภาษาจีน อ่านพินอินตาม และลองพูดเองโดยไม่ดูคำแปล</p>
           </section>
           <div className="life-bottom-note"><MessageCircle size={17} /><span>วิธีฝึก: ฟังภาษาจีนก่อน อ่านพินอินและพูดตาม แล้วลองพูดอีกครั้งโดยดูเฉพาะตัวอักษรจีน</span></div>
