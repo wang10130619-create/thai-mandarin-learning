@@ -74,12 +74,23 @@ const words: Word[] = [
 
 const categories = ["全部", ...Array.from(new Set(words.map((word) => word.category)))];
 function speak(text: string) {
- if (!("speechSynthesis" in window)) return;
+ if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return false;
  window.speechSynthesis.cancel();
  const utterance = new SpeechSynthesisUtterance(text); utterance.lang = "zh-CN"; utterance.rate = 0.78;
- const voice = window.speechSynthesis.getVoices().find((v) => v.lang.toLowerCase().startsWith("zh-cn")) ?? window.speechSynthesis.getVoices().find((v) => v.lang.toLowerCase().startsWith("zh"));
- if (voice) utterance.voice = voice;
- window.speechSynthesis.speak(utterance);
+ const chooseVoice = () => {
+  const voices = window.speechSynthesis.getVoices();
+  const voice = voices.find((v) => v.lang.toLowerCase() === "zh-cn") ?? voices.find((v) => v.lang.toLowerCase().startsWith("zh"));
+  if (voice) utterance.voice = voice;
+  window.speechSynthesis.speak(utterance);
+ };
+ if (window.speechSynthesis.getVoices().length) chooseVoice();
+ else {
+  let started = false;
+  const start = () => { if (started) return; started = true; window.speechSynthesis.removeEventListener?.("voiceschanged", start); chooseVoice(); };
+  window.speechSynthesis.addEventListener?.("voiceschanged", start, { once: true });
+  window.setTimeout(start, 500);
+ }
+ return true;
 }
 export default function Vocabulary() {
  const [query,setQuery] = useState(""); const [category,setCategory] = useState("全部");
@@ -92,7 +103,7 @@ export default function Vocabulary() {
    <p className="vocab-result">พบคำศัพท์ {filtered.length} คำ · ค้นหาด้วยภาษาจีน พินอิน หรือภาษาไทย</p>
    <section className="vocab-grid">{filtered.map((word,i)=><article className="vocab-card" key={word.zh}><div className="vocab-card-visual"><span>{word.emoji}</span><small>{categoryThai[word.category] || "คำศัพท์ทั่วไป"} · {word.category}</small><button onClick={()=>speak(word.zh)} aria-label={"ฟังคำศัพท์ "+word.zh} title="ฟังเสียงจีน"><Volume2 size={16}/></button></div><div className="vocab-card-body"><div className="vocab-word-line"><strong>{word.zh}</strong><span>{word.py}</span></div><p className="vocab-thai">{word.th}</p><div className="vocab-example"><div><small>例句 · ตัวอย่างประโยค</small><button onClick={()=>speak(word.example)} aria-label={"ฟังประโยค "+word.example}><Volume2 size={14}/></button></div><strong>{word.example}</strong><span>{word.examplePy}</span><p>{word.exampleTh}</p></div><div className="vocab-related"><small>相关词 · คำที่เกี่ยวข้อง</small><div>{word.related.map(r=><div className="vocab-related-item" key={r.zh}><button className="vocab-related-open" onClick={()=>{setQuery(r.zh);setCategory("全部");window.scrollTo({top:0,behavior:"smooth"});}}><b>{r.zh}</b><span>{r.py}</span><small>{r.th}</small></button><button className="vocab-related-speak" onClick={()=>speak(r.zh)} aria-label={"ฟังเสียงคำว่า "+r.zh} title="ฟังเสียงจีน"><Volume2 size={13}/></button></div>)}</div></div></div></article>)}</section>
    {filtered.length===0 && <div className="vocab-empty">找不到这个词 · ไม่พบคำที่ค้นหา ลองเปลี่ยนคำค้นหรือเลือกหมวดอื่น</div>}
-   <section className="vocab-study-tip"><span>🧠 วิธีฝึกจำคำศัพท์ · 記憶練習</span><p>ดูภาพก่อน อ่านคำศัพท์ ฟังเสียง แล้วอ่านประโยคตัวอย่าง จากนั้นลองปิดพินอินและคำแปลภาษาไทย แล้วพูดภาษาจีนจากความจำ</p><p>ดูภาพก่อน อ่านคำศัพท์ ฟังเสียงและพูดตามประโยค จากนั้นลองปิดพินอินกับคำแปล แล้วพูดภาษาจีนจากความจำ</p></section>
+   <section className="vocab-study-tip"><span>🧠 วิธีฝึกจำคำศัพท์ · 記憶練習</span><p>ดูภาพก่อน อ่านคำศัพท์ ฟังเสียง แล้วอ่านประโยคตัวอย่าง จากนั้นลองปิดพินอินและคำแปลภาษาไทย แล้วพูดภาษาจีนจากความจำ</p></section>
   </main><footer className="vocab-footer">中文词汇 · 拼音 · ภาษาไทย · 例句 · 关联词</footer>
  </div>;
 }
