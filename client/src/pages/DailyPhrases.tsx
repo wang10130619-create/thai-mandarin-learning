@@ -64,9 +64,19 @@ function SpeakPhrase({ text }: { text: string }) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "zh-CN";
     utterance.rate = 0.82;
-    const voice = window.speechSynthesis.getVoices().find((candidate) => candidate.lang.toLowerCase().startsWith("zh-cn"))
-      ?? window.speechSynthesis.getVoices().find((candidate) => candidate.lang.toLowerCase().startsWith("zh"));
-    if (voice) utterance.voice = voice;
+    const chooseVoiceAndPlay = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const voice = voices.find((candidate) => candidate.lang.toLowerCase() === "zh-cn") ?? voices.find((candidate) => candidate.lang.toLowerCase().startsWith("zh"));
+      if (voice) utterance.voice = voice;
+      window.speechSynthesis.speak(utterance);
+    };
+    if (window.speechSynthesis.getVoices().length) chooseVoiceAndPlay();
+    else {
+      let started = false;
+      const start = () => { if (started) return; started = true; window.speechSynthesis.removeEventListener?.("voiceschanged", start); chooseVoiceAndPlay(); };
+      window.speechSynthesis.addEventListener?.("voiceschanged", start, { once: true });
+      window.setTimeout(start, 700);
+    }
     utterance.onend = () => {
       if (repeatsLeft.current > 0) {
         repeatsLeft.current -= 1;
@@ -82,7 +92,6 @@ function SpeakPhrase({ text }: { text: string }) {
       setRepeating(false);
       if (stopActiveRepeat === stop) stopActiveRepeat = null;
     };
-    window.speechSynthesis.speak(utterance);
   }, [text, stop, cancelTimer]);
   useEffect(() => () => {
     if (stopActiveRepeat === stop) stop();
