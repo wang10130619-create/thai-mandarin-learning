@@ -23,6 +23,27 @@ const phraseGroups: { id: string; title: string; hint: string; items: Phrase[] }
 
 let stopActiveRepeat: (() => void) | null = null;
 
+function speakMandarin(text: string, rate = 0.82) {
+  if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return false;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "zh-CN";
+  utterance.rate = rate;
+  const play = () => {
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find((candidate) => candidate.lang.toLowerCase() === "zh-cn") ?? voices.find((candidate) => candidate.lang.toLowerCase().startsWith("zh"));
+    if (voice) utterance.voice = voice;
+    window.speechSynthesis.speak(utterance);
+  };
+  if (window.speechSynthesis.getVoices().length) play();
+  else {
+    let started = false;
+    const start = () => { if (started) return; started = true; window.speechSynthesis.removeEventListener?.("voiceschanged", start); play(); };
+    window.speechSynthesis.addEventListener?.("voiceschanged", start, { once: true });
+    window.setTimeout(start, 700);
+  }
+  return true;
+}
 function SpeakPhrase({ text }: { text: string }) {
   const [repeating, setRepeating] = useState(false);
   const repeatsLeft = useRef(0);
@@ -74,8 +95,8 @@ function SpeakPhrase({ text }: { text: string }) {
   const playOnce = useCallback(() => {
     if (stopActiveRepeat) stopActiveRepeat();
     else if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-    speakOne();
-  }, [speakOne]);
+    speakMandarin(text);
+  }, [text]);
   const repeatThreeTimes = useCallback(() => {
     if (repeating) return stop();
     if (!("speechSynthesis" in window)) return;
@@ -98,7 +119,7 @@ export default function DailyPhrases() {
     <div className="daily-phrases-heading"><div><span className="eyebrow">คลังวลีใช้จริง · {phraseCount} ประโยค</span><h2>ภาษาจีนที่ใช้ได้ทุกวัน</h2><p>เลือกสถานการณ์ · กดลำโพงเพื่อฟังหนึ่งครั้ง · กดลูกศรวนเพื่อฟังประโยคซ้ำ 3 รอบ แล้วพูดตาม</p></div><div className="daily-phrase-badge"><BookOpen size={20} /><span>ฟัง · อ่านพินอิน · พูดตาม</span></div></div>
     <div className="pronunciation-answer"><div className="pronunciation-answer-icon"><Headphones size={18} /></div><div><strong>มีบทเรียนการออกเสียงอยู่แล้ว และเพิ่มเสียงอ่านในวลีเหล่านี้ด้วย</strong><p>บทเรียนสัปดาห์ที่ 1 สอนเสียงวรรณยุกต์จีน 4 เสียง มีภาพแนวเสียง เสียงตัวอย่างแบบช้า และแบบฝึกฟังจับเสียง ส่วนวลีใหม่มีพินอินให้อ่านและปุ่มฟังภาษาจีน ความชัดของเสียงอ่านอาจต่างกันตามเสียงภาษาจีนที่ติดตั้งในอุปกรณ์</p><a href="#tones">ไปดูบทเรียน 4 เสียง <ArrowRight size={14} /></a></div></div>
     <div className="daily-filter" role="tablist" aria-label="เลือกสถานการณ์ของวลี">{[{ id: "all", title: "ทั้งหมด" }, ...phraseGroups.map(({ id, title }) => ({ id, title }))].map((item) => <button type="button" role="tab" aria-selected={activeGroup === item.id} className={activeGroup === item.id ? "selected" : ""} key={item.id} onClick={() => setActiveGroup(item.id)}>{item.title}</button>)}</div>
-    <div className="daily-group-list">{visibleGroups.map((group) => <section className="daily-phrase-group" key={group.id}><div className="daily-group-title"><h3>{group.title}</h3><span>{group.hint}</span></div><div className="phrase-group-audio"><span className="phrase-group-audio-icon"><Headphones size={16} /></span><div className="phrase-group-audio-copy"><strong>ฟังเสียงตัวอย่างทั้งหมวด</strong><small>เสียงพูดภาษาจีนกลาง · ฟังแล้วพูดตามทีละประโยค</small></div><button type="button" className="group-speak-button" onClick={() => { if (!("speechSynthesis" in window)) return; window.speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(group.items.map((item) => item.zh).join("。")); utterance.lang = "zh-CN"; utterance.rate = 0.78; const voice = window.speechSynthesis.getVoices().find((candidate) => candidate.lang.toLowerCase().startsWith("zh-cn")) ?? window.speechSynthesis.getVoices().find((candidate) => candidate.lang.toLowerCase().startsWith("zh")); if (voice) utterance.voice = voice; window.speechSynthesis.speak(utterance); }}><Volume2 size={15} /> ฟังทั้งหมวดนี้</button></div><div className="daily-phrase-grid">{group.items.map((phrase) => <article className="daily-phrase-card" key={`${phrase.zh}-${phrase.th}`}><div className="daily-phrase-card-top"><strong>{phrase.zh}</strong><SpeakPhrase text={phrase.zh} /></div><span className="daily-phrase-pinyin">{phrase.py}</span><p>{phrase.th}</p></article>)}</div></section>)}</div>
+    <div className="daily-group-list">{visibleGroups.map((group) => <section className="daily-phrase-group" key={group.id}><div className="daily-group-title"><h3>{group.title}</h3><span>{group.hint}</span></div><div className="phrase-group-audio"><span className="phrase-group-audio-icon"><Headphones size={16} /></span><div className="phrase-group-audio-copy"><strong>ฟังเสียงตัวอย่างทั้งหมวด</strong><small>เสียงพูดภาษาจีนกลาง · ฟังแล้วพูดตามทีละประโยค</small></div><button type="button" className="group-speak-button" onClick={() => speakMandarin(group.items.map((item) => item.zh).join("。"), 0.76)}><Volume2 size={15} /> ฟังทั้งหมวดนี้</button></div><div className="daily-phrase-grid">{group.items.map((phrase) => <article className="daily-phrase-card" key={`${phrase.zh}-${phrase.th}`}><div className="daily-phrase-card-top"><strong>{phrase.zh}</strong><SpeakPhrase text={phrase.zh} /></div><span className="daily-phrase-pinyin">{phrase.py}</span><p>{phrase.th}</p></article>)}</div></section>)}</div>
     <div className="daily-phrase-tip"><span>ฝึกวันละ 5 นาที</span><p>เลือก 3 ประโยคจากวันนี้ · กดลูกศรวนเพื่อฟังทีละประโยคซ้ำ 3 รอบ · พูดตาม · ปิดพินอินแล้วลองพูดจากความจำ</p></div>
   </section>;
 }
