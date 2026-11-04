@@ -17,10 +17,19 @@ function speakChinese(text: string, rate = 0.78) {
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "zh-CN";
   utterance.rate = rate;
-  const voices = window.speechSynthesis.getVoices();
-  const voice = voices.find((candidate) => candidate.lang.toLowerCase().startsWith("zh-cn")) ?? voices.find((candidate) => candidate.lang.toLowerCase().startsWith("zh"));
-  if (voice) utterance.voice = voice;
-  window.speechSynthesis.speak(utterance);
+  const chooseVoice = () => {
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find((candidate) => candidate.lang.toLowerCase() === "zh-cn") ?? voices.find((candidate) => candidate.lang.toLowerCase().startsWith("zh"));
+    if (voice) utterance.voice = voice;
+    window.speechSynthesis.speak(utterance);
+  };
+  if (window.speechSynthesis.getVoices().length) chooseVoice();
+  else {
+    let started = false;
+    const start = () => { if (started) return; started = true; window.speechSynthesis.removeEventListener?.("voiceschanged", start); chooseVoice(); };
+    window.speechSynthesis.addEventListener?.("voiceschanged", start, { once: true });
+    window.setTimeout(start, 500);
+  }
   return true;
 }
 
