@@ -48,8 +48,7 @@ const dialogueScenes: Record<number, { emoji: string; place: string; detail: str
   9: { emoji: "🚇 🧳", place: "เดินทางด้วยขนส่งสาธารณะ", detail: "ถามวิธีไปและเวลาที่ใช้" },
   10: { emoji: "🏫 🕗", place: "เล่ากิจวัตรประจำวัน", detail: "พูดถึงงานและเวลาในแต่ละวัน" },
   11: { emoji: "🩺 🏥", place: "ขอความช่วยเหลือ", detail: "บอกอาการพื้นฐานและขอความช่วยเหลือ" },
-  12: { emoji: "🌦️ ☂️", place: "พูดถึงอากาศ", detail: "บอกสภาพอากาศและกิจกรรมที่วางแผนไว้" },
-  13: { emoji: "🎉 🧑🏻‍🤝‍🧑🏻", place: "ทบทวนและสนทนา", detail: "นำประโยคที่เรียนมาใช้ในสถานการณ์จริง" },
+  12: { emoji: "🎉 🧑🏻‍🤝‍🧑🏻", place: "ทบทวนและสนทนา", detail: "นำประโยคที่เรียนมาใช้ในสถานการณ์จริง" },
 };
 
 function DialogueIllustration({ week }: { week: CourseWeek }) {
