@@ -98,7 +98,23 @@ function WeekUnit({ week, complete, onToggle, savedScore, onSaveScore }: { week:
   const score = useMemo(() => answers.reduce((sum, answer, index) => sum + (answer === week.questions[index]?.answer ? 1 : 0), 0), [answers, week.questions]);
   const allAnswered = answers.every((answer) => answer >= 0);
   const passed = score >= Math.ceil(week.questions.length * 2 / 3);
-  const [homeworkDone, setHomeworkDone] = useState<number[]>([]);
+  const homeworkStorageKey = `thai-mandarin-homework-week-${week.week}`;
+  const [homeworkDone, setHomeworkDone] = useState<number[]>(() => {
+    try {
+      const saved = localStorage.getItem(homeworkStorageKey);
+      return saved ? JSON.parse(saved) as number[] : [];
+    } catch {
+      return [];
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem(homeworkStorageKey, JSON.stringify(homeworkDone));
+    } catch {
+      // Progress remains usable if browser storage is unavailable.
+    }
+  }, [homeworkStorageKey, homeworkDone]);
+
   const updateAnswer = (questionIndex: number, answerIndex: number) => {
     setAnswers((current) => current.map((value, index) => index === questionIndex ? answerIndex : value));
     setChecked(false);
@@ -155,7 +171,7 @@ export default function CoursePlan({ weekOneComplete }: Props) {
 
   return <section className="all-weeks-section" id="all-weeks">
     <div className="all-weeks-heading"><div><span className="eyebrow">เส้นทางเรียนครบหลักสูตร · 12 สัปดาห์</span><h2>ต่อยอดภาษาจีนทีละสัปดาห์</h2><p>สัปดาห์ที่ 1 อยู่ด้านบน; เลือกสัปดาห์อื่นเพื่อเปิดคำศัพท์ บทเรียนสองครั้ง บทสนทนา แบบทดสอบ และการบ้าน</p></div><div className="course-progress-card"><span>ความคืบหน้าทั้งหลักสูตร</span><strong>{completedCount}<small> / 12 สัปดาห์</small></strong><div className="course-progress-track"><i style={{ width: `${completedCount / 12 * 100}%` }} /></div></div></div>
-    <div className="quiz-overview" aria-live="polite"><div><span>แบบทดสอบที่ทำแล้ว</span><strong>{attemptedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>ผ่านเกณฑ์แล้ว</span><strong>{passedCount} <small>/ 11 สัปดาห์</small></strong></div><div><span>คะแนนเฉลี่ย</span><strong>{attemptedCount ? `${averageScore}%` : "—"}</strong></div><p>บันทึกผลไว้ในเบราว์เซอร์เครื่องนี้ · เกณฑ์ผ่านอย่างน้อย 2 ใน 3 ข้อ · รวมสัปดาห์ที่ 1–12</p></div><div className="week-jump-list">{Array.from({ length: 12 }, (_, index) => { const week = index + 1; const done = week === 1 ? weekOneComplete : completedWeeks.includes(week); return <a href={week === 1 ? "#start" : `#week-${week}`} key={week} className={done ? "jump-done" : ""}><span>{done ? <Check size={12} /> : String(week).padStart(2, "0")}</span><small>{week === 1 ? "เริ่มต้น" : `สัปดาห์ ${week}`}</small></a>; })}</div>
+    <div className="quiz-overview" aria-live="polite"><div><span>แบบทดสอบที่ทำแล้ว</span><strong>{attemptedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>ผ่านเกณฑ์แล้ว</span><strong>{passedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>คะแนนเฉลี่ย</span><strong>{attemptedCount ? `${averageScore}%` : "—"}</strong></div><p>บันทึกผลไว้ในเบราว์เซอร์เครื่องนี้ · เกณฑ์ผ่านอย่างน้อย 2 ใน 3 ข้อ · รวมสัปดาห์ที่ 1–12</p></div><div className="week-jump-list">{Array.from({ length: 12 }, (_, index) => { const week = index + 1; const done = week === 1 ? weekOneComplete : completedWeeks.includes(week); return <a href={week === 1 ? "#start" : `#week-${week}`} key={week} className={done ? "jump-done" : ""}><span>{done ? <Check size={12} /> : String(week).padStart(2, "0")}</span><small>{week === 1 ? "เริ่มต้น" : `สัปดาห์ ${week}`}</small></a>; })}</div>
     <div className="week-units">{courseWeeks.map((week) => <WeekUnit key={week.week} week={week} complete={completedWeeks.includes(week.week)} onToggle={() => toggle(week.week)} savedScore={quizResults[week.week]} onSaveScore={saveScore} />)}</div>
     <div className="course-footnote"><Headphones size={16} /><p>ควรพูดออกเสียงทุกครั้ง แม้กำลังเรียนคนเดียว: อ่านคำจีน ฟังหรือเลียนแบบเสียง แล้วพูดจากความจำ ความคืบหน้าจะบันทึกไว้ในเบราว์เซอร์เครื่องนี้</p></div>
   </section>;
