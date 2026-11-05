@@ -117,7 +117,7 @@ function SpeakPhrase({ text }: { text: string }) {
     stopActiveRepeat = stop;
     speakOne();
   }, [repeating, stop, cancelTimer, speakOne]);
-  return <div className="daily-audio-actions"><button type="button" className="daily-speak" title="ฟังหนึ่งครั้ง" aria-label={`ฟังหนึ่งครั้ง ${text}`} onClick={playOnce}><Volume2 size={15} /></button><button type="button" className={`daily-repeat ${repeating ? "is-repeating" : ""}`} title={repeating ? "หยุดการเล่นซ้ำ" : "ฟังซ้ำ 3 รอบ"} aria-label={repeating ? `หยุดการเล่นซ้ำ ${text}` : `ฟังซ้ำ 3 รอบ ${text}`} aria-pressed={repeating} onClick={repeatThreeTimes}>{repeating ? <Square size={12} fill="currentColor" /> : <RotateCcw size={14} />}</button></div>;
+  return <div className="daily-audio-actions"><button type="button" className="daily-speak" title="ฟังความเร็วปกติ" aria-label={`ฟังความเร็วปกติ ${text}`} onClick={playOnce}><Volume2 size={15} /><span>ปกติ</span></button><button type="button" className="daily-speak daily-slow" title="ฟังช้าเพื่อฝึกออกเสียง" aria-label={`ฟังช้า ${text}`} onClick={() => { if (stopActiveRepeat) stopActiveRepeat(); speakMandarin(text, 0.62); }}><Volume2 size={15} /><span>ช้า</span></button><button type="button" className={`daily-repeat ${repeating ? "is-repeating" : ""}`} title={repeating ? "หยุดการเล่นซ้ำ" : "ฟังซ้ำ 3 รอบ"} aria-label={repeating ? `หยุดการเล่นซ้ำ ${text}` : `ฟังซ้ำ 3 รอบ ${text}`} aria-pressed={repeating} onClick={repeatThreeTimes}>{repeating ? <Square size={12} fill="currentColor" /> : <RotateCcw size={14} />}</button></div>;
 }
 
 export default function DailyPhrases() {
