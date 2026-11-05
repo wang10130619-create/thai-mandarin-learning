@@ -54,3 +54,26 @@
 .review-show-more{margin-top:9px}
 .review-schedule-note{padding-top:9px;border-top:1px solid #e8ede4}
 @media(max-width:600px){.spaced-review{padding:14px}.review-card-list{grid-template-columns:1fr}.spaced-review-heading h3{font-size:16px}.review-actions button{flex:1;min-height:38px}}
+
+/* Independent listening comprehension */
+.listening-card{padding:14px;border:1px solid #e2e9df;border-radius:10px;background:#fbfcf7}
+.listening-prompt{display:flex;align-items:center;flex-wrap:wrap;gap:9px}
+.listening-prompt>span{width:100%;font-size:8px;color:#91a092;letter-spacing:.06em}
+.listening-prompt>strong{font-size:12px;color:#31594d}
+.listening-play{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:0;border-radius:8px;background:#17645c;color:#fff;font-size:10px;font-weight:700;cursor:pointer}
+.listening-play:hover,.listening-check:hover{background:#124f4a}
+.listening-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:13px 0}
+.listening-options button{min-height:42px;padding:9px 11px;text-align:left;border:1px solid #e1e8de;border-radius:8px;background:#fff;color:#627568;font-size:10px;cursor:pointer}
+.listening-options button:hover,.listening-options button.listening-selected{border-color:#91b7a0;background:#edf4eb;color:#245d50}
+.listening-options button:disabled{cursor:default}
+.listening-options button.listening-correct{border-color:#9cc6a5;background:#e8f4e8;color:#286044;font-weight:700}
+.listening-options button.listening-wrong{border-color:#e4b6a8;background:#faeee9;color:#a35b49}
+.listening-check{padding:9px 14px;border:0;border-radius:7px;background:#17645c;color:#fff;font-size:10px;font-weight:700;cursor:pointer}
+.listening-check:disabled{opacity:.4;cursor:not-allowed}
+.listening-feedback{display:grid;gap:5px;margin-top:10px;padding:11px;border-radius:8px;font-size:10px}
+.listening-feedback.is-correct{background:#eaf4e9;color:#286044}
+.listening-feedback.is-wrong{background:#fbefea;color:#9d5c4c}
+.listening-feedback span{font-size:11px}
+.listening-feedback button{justify-self:start;margin-top:4px;padding:7px 10px;border:1px solid currentColor;border-radius:7px;background:transparent;color:inherit;font-size:9px;cursor:pointer}
+.listening-note{margin:9px 0 0;color:#8b978d;font-size:8px;line-height:1.6}
+@media(max-width:520px){.listening-options{grid-template-columns:1fr}.listening-prompt>strong{width:100%}}
