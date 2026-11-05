@@ -97,7 +97,7 @@ function WeekUnit({ week, complete, onToggle, savedScore, onSaveScore }: { week:
   const [checked, setChecked] = useState(false);
   const score = useMemo(() => answers.reduce((sum, answer, index) => sum + (answer === week.questions[index]?.answer ? 1 : 0), 0), [answers, week.questions]);
   const allAnswered = answers.every((answer) => answer >= 0);
-  const passed = score >= Math.ceil(week.questions.length * 0.67);
+  const passed = score >= Math.ceil(week.questions.length * 2 / 3);
   const [homeworkDone, setHomeworkDone] = useState<number[]>([]);
   const updateAnswer = (questionIndex: number, answerIndex: number) => {
     setAnswers((current) => current.map((value, index) => index === questionIndex ? answerIndex : value));
