@@ -4,6 +4,19 @@ import { courseWeeks, type CourseWeek } from "../courseData";
 import "./CoursePlan.css";
 
 type Props = { weekOneComplete: boolean };
+type ReviewCard = { week: number; zh: string; py: string; th: string; due: string; stage: number };
+const REVIEW_INTERVALS = [1, 3, 7, 14];
+const dateKey = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+const addDays = (days: number) => {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return dateKey(date);
+};
 
 function speakMandarin(text: string, onEnd?: () => void) {
   if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return false;
@@ -146,11 +159,14 @@ function WeekUnit({ week, complete, onToggle, savedScore, onSaveScore }: { week:
 export default function CoursePlan({ weekOneComplete }: Props) {
   const [completedWeeks, setCompletedWeeks] = useState<number[]>([]);
   const [quizResults, setQuizResults] = useState<Record<number, { score: number; total: number; passed: boolean; date: string }>>({});
+  const [reviewCards, setReviewCards] = useState<Record<string, ReviewCard>>({});
+  const [reviewShowAll, setReviewShowAll] = useState(false);
   useEffect(() => {
     try {
       setCompletedWeeks(JSON.parse(localStorage.getItem("thai-mandarin-weeks-complete") || "[]"));
       setQuizResults(JSON.parse(localStorage.getItem("thai-mandarin-quiz-results") || "{}"));
-    } catch { setCompletedWeeks([]); setQuizResults({}); }
+      setReviewCards(JSON.parse(localStorage.getItem("thai-mandarin-review-cards") || "{}"));
+    } catch { setCompletedWeeks([]); setQuizResults({}); setReviewCards({}); }
   }, []);
   useEffect(() => {
     const refreshResults = (event: Event) => {
@@ -162,16 +178,52 @@ export default function CoursePlan({ weekOneComplete }: Props) {
   }, []);
   useEffect(() => { try { localStorage.setItem("thai-mandarin-weeks-complete", JSON.stringify(completedWeeks)); } catch { /* storage may be unavailable */ } }, [completedWeeks]);
   useEffect(() => { try { localStorage.setItem("thai-mandarin-quiz-results", JSON.stringify(quizResults)); } catch { /* storage may be unavailable */ } }, [quizResults]);
+  useEffect(() => { try { localStorage.setItem("thai-mandarin-review-cards", JSON.stringify(reviewCards)); } catch { /* storage may be unavailable */ } }, [reviewCards]);
   const completedCount = completedWeeks.length + (weekOneComplete ? 1 : 0);
   const passedCount = Object.values(quizResults).filter((result) => result.passed).length;
   const attemptedCount = Object.keys(quizResults).length;
   const averageScore = attemptedCount ? Math.round(Object.values(quizResults).reduce((sum, result) => sum + result.score / result.total * 100, 0) / attemptedCount) : 0;
-  const saveScore = (week: number, result: { score: number; total: number; passed: boolean; date: string }) => setQuizResults((current) => ({ ...current, [week]: result }));
+  const saveScore = (week: number, result: { score: number; total: number; passed: boolean; date: string }) => {
+    setQuizResults((current) => ({ ...current, [week]: result }));
+    const lesson = courseWeeks.find((item) => item.week === week);
+    if (lesson) setReviewCards((current) => {
+      const next = { ...current };
+      lesson.words.forEach((word) => {
+        const key = `${week}-${word.zh}`;
+        if (!next[key]) next[key] = { week, zh: word.zh, py: word.py, th: word.th, due: addDays(1), stage: 0 };
+      });
+      return next;
+    });
+  };
+  const today = dateKey(new Date());
+  const dueReviews = Object.entries(reviewCards).filter(([, card]) => card.due <= today);
+  const markRemembered = (key: string) => setReviewCards((current) => {
+    const card = current[key];
+    if (!card) return current;
+    const next = { ...current };
+    const nextStage = card.stage + 1;
+    if (nextStage >= REVIEW_INTERVALS.length) delete next[key];
+    else next[key] = { ...card, stage: nextStage, due: addDays(REVIEW_INTERVALS[nextStage]) };
+    return next;
+  });
+  const markAgain = (key: string) => setReviewCards((current) => current[key] ? { ...current, [key]: { ...current[key], due: addDays(1), stage: 0 } } : current);
   const toggle = (week: number) => setCompletedWeeks((items) => items.includes(week) ? items.filter((item) => item !== week) : [...items, week].sort((a, b) => a - b));
 
   return <section className="all-weeks-section" id="all-weeks">
     <div className="all-weeks-heading"><div><span className="eyebrow">เส้นทางเรียนครบหลักสูตร · 12 สัปดาห์</span><h2>ต่อยอดภาษาจีนทีละสัปดาห์</h2><p>สัปดาห์ที่ 1 อยู่ด้านบน; เลือกสัปดาห์อื่นเพื่อเปิดคำศัพท์ บทเรียนสองครั้ง บทสนทนา แบบทดสอบ และการบ้าน</p></div><div className="course-progress-card"><span>ความคืบหน้าทั้งหลักสูตร</span><strong>{completedCount}<small> / 12 สัปดาห์</small></strong><div className="course-progress-track"><i style={{ width: `${completedCount / 12 * 100}%` }} /></div></div></div>
-    <div className="quiz-overview" aria-live="polite"><div><span>แบบทดสอบที่ทำแล้ว</span><strong>{attemptedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>ผ่านเกณฑ์แล้ว</span><strong>{passedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>คะแนนเฉลี่ย</span><strong>{attemptedCount ? `${averageScore}%` : "—"}</strong></div><p>บันทึกผลไว้ในเบราว์เซอร์เครื่องนี้ · เกณฑ์ผ่านอย่างน้อย 2 ใน 3 ข้อ · รวมสัปดาห์ที่ 1–12</p></div><div className="week-jump-list">{Array.from({ length: 12 }, (_, index) => { const week = index + 1; const done = week === 1 ? weekOneComplete : completedWeeks.includes(week); return <a href={week === 1 ? "#start" : `#week-${week}`} key={week} className={done ? "jump-done" : ""}><span>{done ? <Check size={12} /> : String(week).padStart(2, "0")}</span><small>{week === 1 ? "เริ่มต้น" : `สัปดาห์ ${week}`}</small></a>; })}</div>
+    <div className="quiz-overview" aria-live="polite"><div><span>แบบทดสอบที่ทำแล้ว</span><strong>{attemptedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>ผ่านเกณฑ์แล้ว</span><strong>{passedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>คะแนนเฉลี่ย</span><strong>{attemptedCount ? `${averageScore}%` : "—"}</strong></div><p>บันทึกผลไว้ในเบราว์เซอร์เครื่องนี้ · เกณฑ์ผ่านอย่างน้อย 2 ใน 3 ข้อ · รวมสัปดาห์ที่ 1–12</p></div><section className="spaced-review" aria-label="ทบทวนคำศัพท์ตามกำหนด">
+      <div className="spaced-review-heading"><div><span className="eyebrow">ทบทวนให้จำได้นาน</span><h3>ทบทวนคำศัพท์วันนี้</h3><p>หลังทำแบบทดสอบ คำศัพท์ของสัปดาห์นั้นจะถูกเพิ่มเข้าระบบทบทวนอัตโนมัติ</p></div><strong>{dueReviews.length}<small> คำที่ถึงเวลาทบทวน</small></strong></div>
+      {dueReviews.length === 0 ? <p className="review-empty">วันนี้ยังไม่มีคำศัพท์ที่ถึงกำหนดทบทวน ลองทำแบบทดสอบท้ายสัปดาห์เพื่อเริ่มสะสมคำศัพท์ได้เลย</p> : <>
+        <div className="review-card-list">{(reviewShowAll ? dueReviews : dueReviews.slice(0, 8)).map(([key, card]) => <article className="review-word-card" key={key}>
+          <div className="review-word-main"><strong>{card.zh}</strong><span>{card.py}</span><small>{card.th} · สัปดาห์ที่ {card.week}</small></div>
+          <button type="button" className="review-audio" onClick={() => speakMandarin(card.zh)} aria-label={`ฟัง ${card.zh}`}><Volume2 size={15}/></button>
+          <div className="review-actions"><button type="button" onClick={() => markAgain(key)}>ยังจำไม่ได้</button><button type="button" onClick={() => markRemembered(key)}>จำได้แล้ว</button></div>
+        </article>)}</div>
+        {dueReviews.length > 8 && <button type="button" className="review-show-more" onClick={() => setReviewShowAll((value) => !value)}>{reviewShowAll ? "แสดงน้อยลง" : `ดูทั้งหมดอีก ${dueReviews.length - 8} คำ`}</button>}
+        <p className="review-schedule-note">เมื่อกด “จำได้แล้ว” ระบบจะนัดทบทวนอีกครั้งใน 3, 7 และ 14 วัน หากยังจำไม่ได้ จะกลับมาทบทวนในวันพรุ่งนี้</p>
+      </>}
+    </section>
+    <div className="week-jump-list">{Array.from({ length: 12 }, (_, index) => { const week = index + 1; const done = week === 1 ? weekOneComplete : completedWeeks.includes(week); return <a href={week === 1 ? "#start" : `#week-${week}`} key={week} className={done ? "jump-done" : ""}><span>{done ? <Check size={12} /> : String(week).padStart(2, "0")}</span><small>{week === 1 ? "เริ่มต้น" : `สัปดาห์ ${week}`}</small></a>; })}</div>
     <div className="week-units">{courseWeeks.map((week) => <WeekUnit key={week.week} week={week} complete={completedWeeks.includes(week.week)} onToggle={() => toggle(week.week)} savedScore={quizResults[week.week]} onSaveScore={saveScore} />)}</div>
     <div className="course-footnote"><Headphones size={16} /><p>ควรพูดออกเสียงทุกครั้ง แม้กำลังเรียนคนเดียว: อ่านคำจีน ฟังหรือเลียนแบบเสียง แล้วพูดจากความจำ ความคืบหน้าจะบันทึกไว้ในเบราว์เซอร์เครื่องนี้</p></div>
   </section>;
