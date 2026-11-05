@@ -137,12 +137,12 @@ export default function Home() {
   return <div className="course-site">
     <header className="site-header">
       <a className="wordmark" href="#top" aria-label="กลับไปด้านบน"><span className="brand-mark">中</span><span>จีนเริ่มต้น<span className="wordmark-sub">เรียนรู้ทีละก้าว</span></span></a>
-      <nav className="top-nav" aria-label="เมนูหลัก"><a href="/beginner-guide">คู่มือเริ่มจากศูนย์</a><a href="#all-weeks">หลักสูตร 12 สัปดาห์</a><a href="/life-phrases">生活用語 · บทสนทนาในชีวิตประจำวัน</a><a href="/vocabulary">单词 · คำศัพท์และ造句</a><a href="#tones">ฝึกเสียง</a><a href="#practice">ทดสอบตัวเอง</a></nav>
+      <nav className="top-nav" aria-label="เมนูหลัก"><a href="/beginner-guide">คู่มือเริ่มจากศูนย์</a><a href="#all-weeks">หลักสูตร 12 สัปดาห์</a><a href="/life-phrases">บทสนทนาในชีวิตประจำวัน</a><a href="/vocabulary">คำศัพท์และตัวอย่างประโยค</a><a href="#tones">ฝึกเสียง</a><a href="#practice">ทดสอบตัวเอง</a></nav>
       <button className="print-button" onClick={() => window.print()}><BookOpen size={16} /> พิมพ์บทเรียน</button>
     </header>
     <nav className="mobile-quick-nav" aria-label="เมนูเรียนรู้อย่างรวดเร็ว">
-      <a href="/life-phrases">💬 生活情境 <span>บทสนทนา</span></a>
-      <a href="/vocabulary">📚 生活單詞 <span>คำศัพท์</span></a>
+      <a href="/life-phrases">💬 บทสนทนา <span>ฝึกใช้ในสถานการณ์จริง</span></a>
+      <a href="/vocabulary">📚 คำศัพท์ <span>พร้อมตัวอย่างประโยค</span></a>
     </nav>
 
     <main id="top">
