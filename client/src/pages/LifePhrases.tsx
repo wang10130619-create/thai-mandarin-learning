@@ -217,11 +217,11 @@ export default function LifePhrases() {
   return <div className="life-page">
     <header className="life-header">
       <Link href="/" className="life-brand"><span className="life-brand-mark">中</span><span>จีนเริ่มต้น<small>เรียนรู้ทีละก้าว</small></span></Link>
-      <div className="life-header-links"><Link href="/vocabulary" className="life-back">单词 · คำศัพท์</Link><Link href="/" className="life-back"><ArrowLeft size={16} /> กลับหน้าหลัก</Link></div>
+      <div className="life-header-links"><Link href="/vocabulary" className="life-back">คำศัพท์</Link><Link href="/" className="life-back"><ArrowLeft size={16} /> กลับหน้าหลัก</Link></div>
     </header>
     <main className="life-main">
       <section className="life-hero">
-        <span className="life-eyebrow"><BookOpen size={15} /> 中文生活会话 · บทสนทนาในชีวิตประจำวัน</span>
+        <span className="life-eyebrow"><BookOpen size={15} /> บทสนทนาภาษาจีน · ใช้ในชีวิตประจำวัน</span>
         <h1>生活用语 <span>ภาษาจีนที่ใช้ได้ทุกวัน</span></h1>
         <p>ฝึกบทสนทนาตามสถานการณ์จริง อ่านจีนพร้อมพินอินและคำแปลภาษาไทย แล้วกดฟังทีละประโยคหรือเล่นต่อเนื่องทั้งบท</p>
         <div className="life-stats"><span><b>{scenes.length}</b> สถานการณ์</span><span><b>{scenes.reduce((n, s) => n + s.lines.length, 0)}</b> ประโยคพร้อมเสียง</span><span><b>初学者</b> เริ่มเรียนได้ทันที</span></div>
