@@ -31,3 +31,26 @@
 .week-retry-button{margin-top:8px;padding:7px 10px;border:1px solid #d9c7a9;border-radius:7px;background:#fffaf0;color:#8a6b3d;font-size:9px;cursor:pointer}
 .week-saved-result{margin:7px 0 0;font-size:8px;color:#879187}
 @media(max-width:600px){.quiz-overview{gap:6px;padding:11px}.quiz-overview>div>strong{font-size:17px}.quiz-overview>div>span{font-size:8px}.week-quiz-footer{align-items:flex-start;flex-direction:column}.week-score{line-height:1.6}}
+
+
+/* Spaced vocabulary review */
+.spaced-review{margin:18px 0;padding:18px;border:1px solid #dfe8dc;border-radius:13px;background:linear-gradient(135deg,#f4f8f0,#fffefa)}
+.spaced-review-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:12px}
+.spaced-review-heading .eyebrow{font-size:9px;color:#7c9381;letter-spacing:.08em}
+.spaced-review-heading h3{margin:4px 0;font-size:18px;color:#245348}
+.spaced-review-heading p,.review-empty,.review-schedule-note{margin:4px 0 0;color:#78877c;font-size:10px;line-height:1.7}
+.spaced-review-heading>strong{flex:none;padding:8px 11px;border-radius:9px;background:#e4efe3;color:#245d50;font-size:21px}
+.spaced-review-heading>strong small{display:block;font-size:8px;font-weight:500}
+.review-card-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.review-word-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:11px;border:1px solid #e8ece3;border-radius:9px;background:#fff}
+.review-word-main strong,.review-word-main span,.review-word-main small{display:block}
+.review-word-main strong{font-family:'Noto Serif SC',serif;font-size:21px;color:#245348}
+.review-word-main span{font-size:10px;color:#b16d54;margin-top:2px}
+.review-word-main small{font-size:9px;color:#829087;margin-top:3px}
+.review-audio{width:31px;height:31px;border:1px solid #dce7dc;border-radius:50%;background:#f0f5ee;color:#28645a;display:grid;place-items:center;cursor:pointer}
+.review-actions{grid-column:1/-1;display:flex;gap:7px}
+.review-actions button,.review-show-more{border:1px solid #dce5d9;border-radius:7px;padding:7px 10px;background:#f7f8f3;color:#6c7b70;font-size:9px;cursor:pointer}
+.review-actions button:last-child{background:#e8f1e7;border-color:#d3e4d2;color:#28634f;font-weight:700}
+.review-show-more{margin-top:9px}
+.review-schedule-note{padding-top:9px;border-top:1px solid #e8ede4}
+@media(max-width:600px){.spaced-review{padding:14px}.review-card-list{grid-template-columns:1fr}.spaced-review-heading h3{font-size:16px}.review-actions button{flex:1;min-height:38px}}
