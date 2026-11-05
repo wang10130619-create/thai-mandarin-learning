@@ -17,3 +17,17 @@
 .week-word-title{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .week-word>span{display:block;margin-top:5px}
 .week-word>small{display:block;margin-top:5px;line-height:1.5}
+
+.quiz-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0 18px;padding:13px 15px;border:1px solid #e3e9df;border-radius:10px;background:#fffefa}
+.quiz-overview>div{display:flex;flex-direction:column;gap:3px}
+.quiz-overview>div>span{font-size:9px;color:#7b8a7f}
+.quiz-overview>div>strong{font-size:20px;color:#245d50}
+.quiz-overview>div>strong small{font-size:9px;font-weight:500;color:#87938a}
+.quiz-overview>p{grid-column:1/-1;margin:0;padding-top:7px;border-top:1px solid #edf0e9;font-size:8px;color:#879187}
+.week-check-button:disabled{opacity:.45;cursor:not-allowed}
+.week-score{font-size:9px;color:#78877d}
+.week-score.is-passed{color:#28734e;font-weight:700}
+.week-score.needs-review{color:#a3654f;font-weight:700}
+.week-retry-button{margin-top:8px;padding:7px 10px;border:1px solid #d9c7a9;border-radius:7px;background:#fffaf0;color:#8a6b3d;font-size:9px;cursor:pointer}
+.week-saved-result{margin:7px 0 0;font-size:8px;color:#879187}
+@media(max-width:600px){.quiz-overview{gap:6px;padding:11px}.quiz-overview>div>strong{font-size:17px}.quiz-overview>div>span{font-size:8px}.week-quiz-footer{align-items:flex-start;flex-direction:column}.week-score{line-height:1.6}}
