@@ -77,3 +77,21 @@
 .listening-feedback button{justify-self:start;margin-top:4px;padding:7px 10px;border:1px solid currentColor;border-radius:7px;background:transparent;color:inherit;font-size:9px;cursor:pointer}
 .listening-note{margin:9px 0 0;color:#8b978d;font-size:8px;line-height:1.6}
 @media(max-width:520px){.listening-options{grid-template-columns:1fr}.listening-prompt>strong{width:100%}}
+
+/* Self-recorded pronunciation practice */
+.pronunciation-recorder{padding:14px;border:1px solid #e2e9df;border-radius:10px;background:#fbfcf7}
+.pronunciation-recorder-copy b{font-size:11px;color:#31594d}
+.pronunciation-recorder-copy p{margin:4px 0 11px;font-size:9px;line-height:1.7;color:#7b897e}
+.pronunciation-target{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:11px;border-radius:8px;background:#f0f4eb}
+.pronunciation-target strong{font:600 20px 'Noto Serif SC','Noto Sans Thai',serif;color:#20594f}
+.pronunciation-target span{font-size:10px;color:#b16e54}
+.pronunciation-target small{font-size:9px;color:#78877c}
+.pronunciation-target button{display:inline-flex;align-items:center;gap:6px;margin-left:auto;padding:8px 10px;border:0;border-radius:7px;background:#17645c;color:#fff;font-size:9px;font-weight:700;cursor:pointer}
+.recording-controls{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:12px}
+.recording-controls>button{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #d9e4d8;border-radius:7px;background:#fff;color:#286157;font-size:9px;font-weight:700;cursor:pointer}
+.recording-controls>button.record-stop{border-color:#e6c5b8;background:#fbefea;color:#a45e4c}
+.record-dot{width:9px;height:9px;border-radius:50%;background:#c65f4d;box-shadow:0 0 0 3px #f7e4de}
+.recording-controls audio{width:min(100%,320px);height:34px}
+.recording-status,.recording-error,.recording-privacy,.recording-limit{display:block;margin-top:8px;font-size:8px;line-height:1.65}
+.recording-status{color:#a45e4c}.recording-error{color:#a34f42}.recording-privacy{color:#74887a}.recording-limit{color:#9a805d}
+@media(max-width:520px){.pronunciation-target{align-items:flex-start}.pronunciation-target button{margin-left:0}.recording-controls{align-items:flex-start;flex-direction:column}.recording-controls audio{width:100%}}
