@@ -136,6 +136,14 @@ export default function CoursePlan({ weekOneComplete }: Props) {
       setQuizResults(JSON.parse(localStorage.getItem("thai-mandarin-quiz-results") || "{}"));
     } catch { setCompletedWeeks([]); setQuizResults({}); }
   }, []);
+  useEffect(() => {
+    const refreshResults = (event: Event) => {
+      const detail = (event as CustomEvent<Record<number, { score: number; total: number; passed: boolean; date: string }>>).detail;
+      if (detail) setQuizResults(detail);
+    };
+    window.addEventListener("thai-mandarin-quiz-updated", refreshResults);
+    return () => window.removeEventListener("thai-mandarin-quiz-updated", refreshResults);
+  }, []);
   useEffect(() => { try { localStorage.setItem("thai-mandarin-weeks-complete", JSON.stringify(completedWeeks)); } catch { /* storage may be unavailable */ } }, [completedWeeks]);
   useEffect(() => { try { localStorage.setItem("thai-mandarin-quiz-results", JSON.stringify(quizResults)); } catch { /* storage may be unavailable */ } }, [quizResults]);
   const completedCount = completedWeeks.length + (weekOneComplete ? 1 : 0);
@@ -147,7 +155,7 @@ export default function CoursePlan({ weekOneComplete }: Props) {
 
   return <section className="all-weeks-section" id="all-weeks">
     <div className="all-weeks-heading"><div><span className="eyebrow">เส้นทางเรียนครบหลักสูตร · 12 สัปดาห์</span><h2>ต่อยอดภาษาจีนทีละสัปดาห์</h2><p>สัปดาห์ที่ 1 อยู่ด้านบน; เลือกสัปดาห์อื่นเพื่อเปิดคำศัพท์ บทเรียนสองครั้ง บทสนทนา แบบทดสอบ และการบ้าน</p></div><div className="course-progress-card"><span>ความคืบหน้าทั้งหลักสูตร</span><strong>{completedCount}<small> / 12 สัปดาห์</small></strong><div className="course-progress-track"><i style={{ width: `${completedCount / 12 * 100}%` }} /></div></div></div>
-    <div className="quiz-overview" aria-live="polite"><div><span>แบบทดสอบที่ทำแล้ว</span><strong>{attemptedCount} <small>/ 11 สัปดาห์</small></strong></div><div><span>ผ่านเกณฑ์แล้ว</span><strong>{passedCount} <small>/ 11 สัปดาห์</small></strong></div><div><span>คะแนนเฉลี่ย</span><strong>{attemptedCount ? `${averageScore}%` : "—"}</strong></div><p>บันทึกผลไว้ในเบราว์เซอร์เครื่องนี้ · เกณฑ์ผ่านอย่างน้อย 2 ใน 3 ข้อ</p></div><div className="week-jump-list">{Array.from({ length: 12 }, (_, index) => { const week = index + 1; const done = week === 1 ? weekOneComplete : completedWeeks.includes(week); return <a href={week === 1 ? "#start" : `#week-${week}`} key={week} className={done ? "jump-done" : ""}><span>{done ? <Check size={12} /> : String(week).padStart(2, "0")}</span><small>{week === 1 ? "เริ่มต้น" : `สัปดาห์ ${week}`}</small></a>; })}</div>
+    <div className="quiz-overview" aria-live="polite"><div><span>แบบทดสอบที่ทำแล้ว</span><strong>{attemptedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>ผ่านเกณฑ์แล้ว</span><strong>{passedCount} <small>/ 11 สัปดาห์</small></strong></div><div><span>คะแนนเฉลี่ย</span><strong>{attemptedCount ? `${averageScore}%` : "—"}</strong></div><p>บันทึกผลไว้ในเบราว์เซอร์เครื่องนี้ · เกณฑ์ผ่านอย่างน้อย 2 ใน 3 ข้อ · รวมสัปดาห์ที่ 1–12</p></div><div className="week-jump-list">{Array.from({ length: 12 }, (_, index) => { const week = index + 1; const done = week === 1 ? weekOneComplete : completedWeeks.includes(week); return <a href={week === 1 ? "#start" : `#week-${week}`} key={week} className={done ? "jump-done" : ""}><span>{done ? <Check size={12} /> : String(week).padStart(2, "0")}</span><small>{week === 1 ? "เริ่มต้น" : `สัปดาห์ ${week}`}</small></a>; })}</div>
     <div className="week-units">{courseWeeks.map((week) => <WeekUnit key={week.week} week={week} complete={completedWeeks.includes(week.week)} onToggle={() => toggle(week.week)} savedScore={quizResults[week.week]} onSaveScore={saveScore} />)}</div>
     <div className="course-footnote"><Headphones size={16} /><p>ควรพูดออกเสียงทุกครั้ง แม้กำลังเรียนคนเดียว: อ่านคำจีน ฟังหรือเลียนแบบเสียง แล้วพูดจากความจำ ความคืบหน้าจะบันทึกไว้ในเบราว์เซอร์เครื่องนี้</p></div>
   </section>;
