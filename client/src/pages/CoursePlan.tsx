@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Check, CheckCircle2, ChevronDown, ChevronRight, Clock3, GraduationCap, Headphones, Lightbulb, MessageCircle, NotebookPen, Volume2, Play, Square } from "lucide-react";
 import { courseWeeks, type CourseWeek } from "../courseData";
 import "./CoursePlan.css";
@@ -105,6 +105,62 @@ function LessonSession({ title, activities }: { title: string; activities: Cours
   return <div className="session-card"><div className="session-heading"><div><span>{title}</span><small>ทำตามลำดับของคุณเอง · หยุดพักได้</small></div><b><Clock3 size={14} /> {total} นาที</b></div><div className="session-activities">{activities.map((activity, index) => <article className="session-activity" key={activity.title}><span className="activity-index">{String(index + 1).padStart(2, "0")}</span><div><strong>{activity.title}</strong><p>{activity.detail}</p></div><span className="activity-minutes">{activity.min} นาที</span></article>)}</div></div>;
 }
 
+function PronunciationRecorder({ phrase }: { phrase: CourseWeek["patterns"][number] }) {
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const chunksRef = useRef<BlobPart[]>([]);
+  const audioUrlRef = useRef<string | null>(null);
+  const [recording, setRecording] = useState(false);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  useEffect(() => () => {
+    recorderRef.current?.state !== "inactive" && recorderRef.current?.stop();
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
+  }, []);
+  const startRecording = async () => {
+    setError("");
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setError("เบราว์เซอร์นี้ไม่รองรับการบันทึกเสียง กรุณาใช้ Chrome หรือ Edge และเปิดผ่าน HTTPS");
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      chunksRef.current = [];
+      const recorder = new MediaRecorder(stream);
+      recorderRef.current = recorder;
+      recorder.ondataavailable = (event) => { if (event.data.size > 0) chunksRef.current.push(event.data); };
+      recorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: recorder.mimeType || "audio/webm" });
+        if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
+        const url = URL.createObjectURL(blob);
+        audioUrlRef.current = url;
+        setAudioUrl(url);
+        stream.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      };
+      recorder.start();
+      setRecording(true);
+    } catch {
+      setError("ไม่สามารถใช้ไมโครโฟนได้ กรุณาอนุญาตการใช้ไมโครโฟนในการตั้งค่าเบราว์เซอร์");
+    }
+  };
+  const stopRecording = () => {
+    if (recorderRef.current?.state === "recording") recorderRef.current.stop();
+    setRecording(false);
+  };
+  return <div className="pronunciation-recorder">
+    <div className="pronunciation-recorder-copy"><b>ฝึกพูดและฟังเสียงของตัวเอง</b><p>1. ฟังเสียงตัวอย่าง 2. พูดตาม 3. อัดเสียง 4. เปิดฟังและเปรียบเทียบ</p></div>
+    <div className="pronunciation-target"><strong>{phrase.zh}</strong><span>{phrase.py}</span><small>{phrase.th}</small><button type="button" onClick={() => speakMandarin(phrase.zh)}><Volume2 size={14}/> ฟังเสียงตัวอย่าง</button></div>
+    <div className="recording-controls">{!recording ? <button type="button" onClick={startRecording}><span className="record-dot"/> เริ่มบันทึกเสียง</button> : <button type="button" className="record-stop" onClick={stopRecording}><Square size={13}/> หยุดบันทึก</button>}{audioUrl && <audio controls src={audioUrl}>เบราว์เซอร์ไม่รองรับการเล่นเสียง</audio>}</div>
+    {recording && <small className="recording-status" role="status">กำลังบันทึกเสียง… พูดประโยคนี้ให้จบแล้วกดหยุด</small>}
+    {error && <small className="recording-error" role="alert">{error}</small>}
+    <small className="recording-privacy">เสียงบันทึกอยู่ในหน้านี้ชั่วคราว ไม่ได้ส่งไปยังเซิร์ฟเวอร์ และจะหายเมื่อปิดหรือรีเฟรชหน้านี้</small>
+    <small className="recording-limit">ระบบนี้ช่วยให้คุณฟังและเปรียบเทียบเสียงด้วยตัวเอง ยังไม่สามารถให้คะแนนความถูกต้องของเสียงหรือวรรณยุกต์ได้</small>
+  </div>;
+}
+
 function WeekUnit({ week, complete, onToggle, savedScore, onSaveScore, onAddReview }: { week: CourseWeek; complete: boolean; onToggle: () => void; savedScore?: { score: number; total: number; passed: boolean; date: string }; onSaveScore: (week: number, result: { score: number; total: number; passed: boolean; date: string }) => void; onAddReview: (week: number, word: CourseWeek["words"][number]) => void }) {
   const [answers, setAnswers] = useState<number[]>(() => week.questions.map(() => -1));
   const [checked, setChecked] = useState(false);
@@ -145,7 +201,7 @@ function WeekUnit({ week, complete, onToggle, savedScore, onSaveScore, onAddRevi
       </summary>
       <div className="week-detail-body">
         <div className="week-goal"><span><GraduationCap size={17} /></span><div><b>เป้าหมายประจำสัปดาห์</b><p>{week.goal}</p></div></div>
-        <div className="week-pronunciation"><Volume2 size={16} /><div><b>เคล็ดลับการออกเสียง</b><p>{week.pronunciation}</p></div></div>
+        <div className="week-pronunciation"><Volume2 size={16} /><div><b>เคล็ดลับการออกเสียง</b><p>{week.pronunciation}</p></div></div>\n        <div className="week-block"><div className="week-block-title"><span className="week-block-icon"><Volume2 size={16} /></span><div><h4>ฝึกออกเสียงด้วยตัวเอง</h4><p>ฟังเสียงตัวอย่าง บันทึกเสียงของคุณ แล้วฟังเปรียบเทียบ</p></div></div><PronunciationRecorder phrase={week.patterns[0]} /></div>
         <div className="week-block"><div className="week-block-title"><span className="week-block-icon"><BookOpen size={16} /></span><div><h4>คำศัพท์สำคัญ</h4><p>อ่านตัวจีน · พินอิน · ความหมายภาษาไทย</p></div></div><VocabularyGrid week={week} /></div>
         <div className="week-block"><div className="week-block-title"><span className="week-block-icon"><NotebookPen size={16} /></span><div><h4>ประโยคที่ใช้ได้จริง</h4><p>ลองพูดตาม แล้วเปลี่ยนข้อมูลให้เป็นเรื่องของคุณ</p></div></div><SentencePatterns week={week} /></div>
         <div className="week-block"><div className="week-block-title"><span className="week-block-icon"><MessageCircle size={16} /></span><div><h4>บทสนทนาพร้อมภาพประกอบและเสียง</h4><p>ดูสถานการณ์ อ่านพินอินและคำแปลไทย แล้วฟังทีละประโยคหรือฟังต่อเนื่องทั้งบท</p></div></div><DialogueIllustration week={week} /><DialogueAudioControls week={week} /><div className="week-dialogue">{week.dialogue.map((line, index) => <div className="week-dialogue-line" key={`${index}-${line.zh}`}><span className={`dialogue-speaker speaker-${line.speaker.toLowerCase()}`}>{line.speaker}</span><div><div className="dialogue-zh"><strong>{line.zh}</strong><SpeakButton text={line.zh} /></div><span>{line.py}</span><small>{line.th}</small></div></div>)}</div></div>
