@@ -248,6 +248,7 @@ function TonePractice() {
   }, []);
   const target = toneExamples[round % toneExamples.length];
   const accuracy = stats.attempts ? Math.round(stats.correct / stats.attempts * 100) : 0;
+  const weakestTone = Object.entries(stats.errors).sort((a, b) => Number(b[1]) - Number(a[1]))[0];
   const answer = () => {
     if (choice === null || checked) return;
     const isCorrect = choice === target.tone;
@@ -269,7 +270,7 @@ function TonePractice() {
       <div className="tone-choices">{toneExamples.map((tone) => <button type="button" key={tone.tone} disabled={checked} className={checked && tone.tone === target.tone ? "tone-choice-correct" : checked && choice === tone.tone ? "tone-choice-wrong" : choice === tone.tone ? "tone-choice-selected" : ""} onClick={() => setChoice(tone.tone)}><b>{tone.tone}</b><span>{tone.label}</span></button>)}</div>
       {!checked ? <button type="button" className="tone-submit" disabled={choice === null} onClick={answer}>ตรวจคำตอบ</button> : <div className={choice === target.tone ? "tone-feedback tone-right" : "tone-feedback tone-wrong"} role="status"><strong>{choice === target.tone ? "ถูกต้อง!" : "ยังไม่ถูกต้อง ลองฟังซ้ำอีกครั้ง"}</strong><span>เสียงที่ถูกต้องคือโทน {target.tone}: {target.zh} · {target.py} · {target.meaning}</span><small>{target.hint}</small><button type="button" onClick={nextQuestion}>ข้อต่อไป</button></div>}
     </div>
-    <div className="tone-practice-footer"><span>ทำแล้ว {stats.attempts} ข้อ · ถูก {stats.correct} ข้อ</span><button type="button" onClick={resetStats}>ล้างสถิติ</button></div>
+    <div className="tone-practice-footer"><span>ทำแล้ว {stats.attempts} ข้อ · ถูก {stats.correct} ข้อ{weakestTone && Number(weakestTone[1]) > 0 ? ` · ควรฝึกโทน ${weakestTone[0]} เพิ่ม` : ""}</span><button type="button" onClick={resetStats}>ล้างสถิติ</button></div>
     <p className="tone-disclaimer">เสียงสร้างจากระบบอ่านออกเสียงของเบราว์เซอร์ จึงอาจมีความแตกต่างตามอุปกรณ์ แบบฝึกนี้วัดการฟังแยกเสียง ไม่ได้ให้คะแนนการออกเสียงจากไมโครโฟน</p>
   </section>;
 }
