@@ -228,6 +228,52 @@ function WeekUnit({ week, complete, onToggle, savedScore, onSaveScore, onAddRevi
   </article>;
 }
 
+const toneExamples = [
+  { tone: 1, label: "เสียงสูงระดับ", hint: "รักษาระดับเสียงให้สูงและสม่ำเสมอ", zh: "妈", py: "mā", meaning: "แม่" },
+  { tone: 2, label: "เสียงไต่ขึ้น", hint: "เริ่มเสียงกลางแล้วไต่สูงขึ้น", zh: "麻", py: "má", meaning: "ป่าน" },
+  { tone: 3, label: "เสียงต่ำแล้ววกขึ้น", hint: "ลดเสียงต่ำ แล้ววกขึ้นเมื่อพูดชัดเต็มเสียง", zh: "马", py: "mǎ", meaning: "ม้า" },
+  { tone: 4, label: "เสียงตก", hint: "เริ่มเสียงสูงแล้วตกลงอย่างชัดเจน", zh: "骂", py: "mà", meaning: "ดุด่า" },
+];
+type ToneStats = { attempts: number; correct: number; errors: Record<number, number> };
+function TonePractice() {
+  const [round, setRound] = useState(0);
+  const [choice, setChoice] = useState<number | null>(null);
+  const [checked, setChecked] = useState(false);
+  const [stats, setStats] = useState<ToneStats>({ attempts: 0, correct: 0, errors: {} });
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("thai-mandarin-tone-stats");
+      if (saved) setStats(JSON.parse(saved) as ToneStats);
+    } catch { /* keep an empty practice record */ }
+  }, []);
+  const target = toneExamples[round % toneExamples.length];
+  const accuracy = stats.attempts ? Math.round(stats.correct / stats.attempts * 100) : 0;
+  const answer = () => {
+    if (choice === null || checked) return;
+    const isCorrect = choice === target.tone;
+    const next = { attempts: stats.attempts + 1, correct: stats.correct + (isCorrect ? 1 : 0), errors: { ...stats.errors, ...(isCorrect ? {} : { [target.tone]: (stats.errors[target.tone] ?? 0) + 1 }) } };
+    setStats(next);
+    try { localStorage.setItem("thai-mandarin-tone-stats", JSON.stringify(next)); } catch { /* progress storage may be unavailable */ }
+    setChecked(true);
+  };
+  const nextQuestion = () => { setRound((value) => value + 1); setChoice(null); setChecked(false); };
+  const resetStats = () => {
+    const empty: ToneStats = { attempts: 0, correct: 0, errors: {} };
+    setStats(empty);
+    try { localStorage.setItem("thai-mandarin-tone-stats", JSON.stringify(empty)); } catch { /* storage may be unavailable */ }
+  };
+  return <section className="tone-practice" aria-label="ฝึกฟังเสียงวรรณยุกต์ภาษาจีน">
+    <div className="tone-practice-heading"><div><span className="eyebrow">ฝึกฟังเสียงวรรณยุกต์</span><h3>แยกเสียง 4 โทนของภาษาจีน</h3><p>ฟังเสียงตัวอย่าง แล้วเลือกชนิดเสียงที่ได้ยิน โดยยังไม่แสดงตัวอักษรจีนก่อนตอบ</p></div><div className="tone-score"><strong>{accuracy}%</strong><small>ตอบถูกสะสม</small></div></div>
+    <div className="tone-list">{toneExamples.map((tone) => <div className="tone-reference" key={tone.tone}><b>{tone.tone}</b><div><strong>{tone.label}</strong><small>{tone.hint}</small></div><button type="button" onClick={() => speakMandarin(tone.zh)} aria-label={`ฟังเสียงตัวอย่างโทนที่ ${tone.tone}`}><Volume2 size={14}/></button></div>)}</div>
+    <div className="tone-question"><span>คำถามที่ {round + 1}</span><strong>กดฟัง แล้วเลือกเสียงวรรณยุกต์ที่ได้ยิน</strong><button type="button" className="tone-play" onClick={() => speakMandarin(target.zh)}><Volume2 size={16}/> ฟังเสียง</button>
+      <div className="tone-choices">{toneExamples.map((tone) => <button type="button" key={tone.tone} disabled={checked} className={checked && tone.tone === target.tone ? "tone-choice-correct" : checked && choice === tone.tone ? "tone-choice-wrong" : choice === tone.tone ? "tone-choice-selected" : ""} onClick={() => setChoice(tone.tone)}><b>{tone.tone}</b><span>{tone.label}</span></button>)}</div>
+      {!checked ? <button type="button" className="tone-submit" disabled={choice === null} onClick={answer}>ตรวจคำตอบ</button> : <div className={choice === target.tone ? "tone-feedback tone-right" : "tone-feedback tone-wrong"} role="status"><strong>{choice === target.tone ? "ถูกต้อง!" : "ยังไม่ถูกต้อง ลองฟังซ้ำอีกครั้ง"}</strong><span>เสียงที่ถูกต้องคือโทน {target.tone}: {target.zh} · {target.py} · {target.meaning}</span><small>{target.hint}</small><button type="button" onClick={nextQuestion}>ข้อต่อไป</button></div>}
+    </div>
+    <div className="tone-practice-footer"><span>ทำแล้ว {stats.attempts} ข้อ · ถูก {stats.correct} ข้อ</span><button type="button" onClick={resetStats}>ล้างสถิติ</button></div>
+    <p className="tone-disclaimer">เสียงสร้างจากระบบอ่านออกเสียงของเบราว์เซอร์ จึงอาจมีความแตกต่างตามอุปกรณ์ แบบฝึกนี้วัดการฟังแยกเสียง ไม่ได้ให้คะแนนการออกเสียงจากไมโครโฟน</p>
+  </section>;
+}
+
 export default function CoursePlan({ weekOneComplete }: Props) {
   const [completedWeeks, setCompletedWeeks] = useState<number[]>([]);
   const [quizResults, setQuizResults] = useState<Record<number, { score: number; total: number; passed: boolean; date: string }>>({});
@@ -287,7 +333,7 @@ export default function CoursePlan({ weekOneComplete }: Props) {
 
   return <section className="all-weeks-section" id="all-weeks">
     <div className="all-weeks-heading"><div><span className="eyebrow">เส้นทางเรียนครบหลักสูตร · 12 สัปดาห์</span><h2>ต่อยอดภาษาจีนทีละสัปดาห์</h2><p>สัปดาห์ที่ 1 อยู่ด้านบน; เลือกสัปดาห์อื่นเพื่อเปิดคำศัพท์ บทเรียนสองครั้ง บทสนทนา แบบทดสอบ และการบ้าน</p></div><div className="course-progress-card"><span>ความคืบหน้าทั้งหลักสูตร</span><strong>{completedCount}<small> / 12 สัปดาห์</small></strong><div className="course-progress-track"><i style={{ width: `${completedCount / 12 * 100}%` }} /></div></div></div>
-    <div className="quiz-overview" aria-live="polite"><div><span>แบบทดสอบที่ทำแล้ว</span><strong>{attemptedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>ผ่านเกณฑ์แล้ว</span><strong>{passedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>คะแนนเฉลี่ย</span><strong>{attemptedCount ? `${averageScore}%` : "—"}</strong></div><p>บันทึกผลไว้ในเบราว์เซอร์เครื่องนี้ · เกณฑ์ผ่านอย่างน้อย 2 ใน 3 ข้อ · รวมสัปดาห์ที่ 1–12</p></div><section className="spaced-review" aria-label="ทบทวนคำศัพท์ตามกำหนด">
+    <TonePractice />\n    <div className="quiz-overview" aria-live="polite"><div><span>แบบทดสอบที่ทำแล้ว</span><strong>{attemptedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>ผ่านเกณฑ์แล้ว</span><strong>{passedCount} <small>/ 12 สัปดาห์</small></strong></div><div><span>คะแนนเฉลี่ย</span><strong>{attemptedCount ? `${averageScore}%` : "—"}</strong></div><p>บันทึกผลไว้ในเบราว์เซอร์เครื่องนี้ · เกณฑ์ผ่านอย่างน้อย 2 ใน 3 ข้อ · รวมสัปดาห์ที่ 1–12</p></div><section className="spaced-review" aria-label="ทบทวนคำศัพท์ตามกำหนด">
       <div className="spaced-review-heading"><div><span className="eyebrow">ทบทวนให้จำได้นาน</span><h3>ทบทวนคำศัพท์วันนี้</h3><p>หลังทำแบบทดสอบ คำศัพท์ของสัปดาห์นั้นจะถูกเพิ่มเข้าระบบทบทวนอัตโนมัติ</p></div><strong>{dueReviews.length}<small> คำที่ถึงเวลาทบทวน</small></strong></div>
       {dueReviews.length === 0 ? <p className="review-empty">วันนี้ยังไม่มีคำศัพท์ที่ถึงกำหนดทบทวน ลองทำแบบทดสอบท้ายสัปดาห์เพื่อเริ่มสะสมคำศัพท์ได้เลย</p> : <>
         <div className="review-card-list">{(reviewShowAll ? dueReviews : dueReviews.slice(0, 8)).map(([key, card]) => <article className="review-word-card" key={key}>
