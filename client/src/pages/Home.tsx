@@ -69,6 +69,7 @@ export default function Home() {
   const [toneResult, setToneResult] = useState<"correct" | "retry" | "">("");
   const [answers, setAnswers] = useState<number[]>([-1, -1, -1]);
   const [quizChecked, setQuizChecked] = useState(false);
+  const [weekOneSaved, setWeekOneSaved] = useState<{ score: number; total: number; passed: boolean; date: string } | null>(null);
   const [learnerName, setLearnerName] = useState("");
   const [recording, setRecording] = useState(false);
   const [recordingUrl, setRecordingUrl] = useState("");
@@ -78,7 +79,11 @@ export default function Home() {
   const chunksRef = useRef<Blob[]>([]);
 
   useEffect(() => {
-    try { setDone(JSON.parse(localStorage.getItem("thai-mandarin-week1-progress") || "[]")); } catch { setDone([]); }
+    try {
+      setDone(JSON.parse(localStorage.getItem("thai-mandarin-week1-progress") || "[]"));
+      const results = JSON.parse(localStorage.getItem("thai-mandarin-quiz-results") || "{}");
+      setWeekOneSaved(results[1] || null);
+    } catch { setDone([]); setWeekOneSaved(null); }
   }, []);
   useEffect(() => {
     try { localStorage.setItem("thai-mandarin-week1-progress", JSON.stringify(done)); } catch { /* Private browsing may disable storage. */ }
@@ -91,7 +96,17 @@ export default function Home() {
   const toggleDone = (id: string) => setDone((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
   const markComplete = (id: string) => <button className={`complete-button ${done.includes(id) ? "is-done" : ""}`} onClick={() => toggleDone(id)} aria-pressed={done.includes(id)}>{done.includes(id) ? <Check size={16} /> : <span className="empty-check" />} {done.includes(id) ? "เรียนส่วนนี้แล้ว" : "ทำส่วนนี้เสร็จแล้ว"}</button>;
   const checkTone = () => setToneResult(toneAnswer.replace(/[^1-4]/g, "") === "14232134" ? "correct" : "retry");
-  const checkQuiz = () => setQuizChecked(true);
+  const checkQuiz = () => {
+    setQuizChecked(true);
+    const result = { score, total: quizQuestions.length, passed: score >= Math.ceil(quizQuestions.length * 2 / 3), date: new Date().toISOString() };
+    setWeekOneSaved(result);
+    try {
+      const results = JSON.parse(localStorage.getItem("thai-mandarin-quiz-results") || "{}");
+      results[1] = result;
+      localStorage.setItem("thai-mandarin-quiz-results", JSON.stringify(results));
+      window.dispatchEvent(new CustomEvent("thai-mandarin-quiz-updated", { detail: results }));
+    } catch { /* local storage may be unavailable */ }
+  };
   const score = answers.reduce((sum, choice, i) => sum + (choice === quizQuestions[i].answer ? 1 : 0), 0);
 
   const startRecording = async () => {
@@ -159,7 +174,7 @@ export default function Home() {
 
           <section className="lesson-panel dialogue-panel" id="dialogue"><div className="panel-topline"><span className="step-chip">05</span><span className="duration"><Clock3 size={14} /> 15 นาที</span></div><SectionTitle eyebrow="ฝึกบทสนทนา · สถานการณ์จริง" title="พบเพื่อนใหม่" detail="ฝึกบทสนทนาสั้น ๆ สลับพูดทั้งสองบทบาทได้ แม้กำลังเรียนคนเดียว" /><div className="dialogue-scene"><div className="dialogue-illustration" role="img" aria-label="ภาพประกอบบทสนทนา"><span>👩🏻‍🎓</span><span>👋</span><span>👨🏻‍🎓</span></div><span>สถานการณ์: พบเพื่อนใหม่</span></div><div className="dialogue-lines"><div className="dialogue-line"><span className="speaker speaker-a">A</span><div><strong>你好！</strong><InlineSpeak text="你好！" /><span>Nǐ hǎo! · สวัสดี!</span></div></div><div className="dialogue-line"><span className="speaker speaker-b">B</span><div><strong>你好！我叫＿＿。</strong><InlineSpeak text="你好！我叫安娜。" /><span>Nǐ hǎo! Wǒ jiào __. · สวัสดี! ฉันชื่อ＿＿</span></div></div><div className="dialogue-line"><span className="speaker speaker-a">A</span><div><strong>我叫＿＿。我是泰国人。</strong><InlineSpeak text="我叫安娜。我是泰国人。" /><span>Wǒ jiào __. Wǒ shì Tàiguó rén. · ฉันชื่อ＿＿ ฉันเป็นคนไทย</span></div></div><div className="dialogue-line"><span className="speaker speaker-b">B</span><div><strong>很高兴认识你！</strong><InlineSpeak text="很高兴认识你！" /><span>Hěn gāoxìng rènshi nǐ! · ยินดีที่ได้รู้จัก!</span></div></div></div><div className="practice-steps"><span><b>1</b> อ่านตามบท</span><span><b>2</b> พูดโดยดูเฉพาะจีน</span><span><b>3</b> ลองพูดจากความจำ</span></div>{markComplete("dialogue")}</section>
 
-          <section className="lesson-panel practice-panel" id="practice"><div className="panel-topline"><span className="step-chip">06</span><span className="duration"><Clock3 size={14} /> 35 นาที</span></div><SectionTitle eyebrow="ทบทวนบทเรียน · ตรวจความเข้าใจ" title="ทบทวน แล้วพูดด้วยตัวเอง" detail="ตอบคำถามสามข้อ ก่อนอัดเสียงแนะนำตัว 20–30 วินาที" /><div className="quiz-list">{quizQuestions.map((item, questionIndex) => <fieldset className="quiz-question" key={item.question}><legend><span>{String(questionIndex + 1).padStart(2, "0")}</span>{item.question}</legend><div className="quiz-options">{item.options.map((option, optionIndex) => <label className={`quiz-option ${quizChecked && answers[questionIndex] === optionIndex ? (optionIndex === item.answer ? "option-correct" : "option-wrong") : ""}`} key={option}><input type="radio" name={`question-${questionIndex}`} checked={answers[questionIndex] === optionIndex} onChange={() => { setAnswers((current) => current.map((value, i) => i === questionIndex ? optionIndex : value)); setQuizChecked(false); }} /><span>{option}</span>{quizChecked && optionIndex === item.answer && <CheckCircle2 size={17} />}</label>)}</div>{quizChecked && <p className="micro-copy" role="status"><strong>คำอธิบาย:</strong> {item.explanation} {answers[questionIndex] === item.answer ? "ตอบถูกแล้ว" : "ลองอ่านคำอธิบาย แล้วเลือกคำตอบอีกครั้ง"}</p>}</fieldset>)}</div><div className="quiz-actions"><button className="small-cta" onClick={checkQuiz}>ตรวจแบบทดสอบ <ArrowUpRight size={15} /></button>{quizChecked && <span className="quiz-score" role="status">คะแนน {score} / 3 {score === 3 ? "· เก่งมาก! พร้อมฝึกพูดแล้ว" : "· อ่านคำอธิบายด้านล่าง แล้วลองใหม่ได้"}</span>}</div>
+          <section className="lesson-panel practice-panel" id="practice"><div className="panel-topline"><span className="step-chip">06</span><span className="duration"><Clock3 size={14} /> 35 นาที</span></div><SectionTitle eyebrow="ทบทวนบทเรียน · ตรวจความเข้าใจ" title="ทบทวน แล้วพูดด้วยตัวเอง" detail="ตอบคำถามสามข้อ ก่อนอัดเสียงแนะนำตัว 20–30 วินาที" /><div className="quiz-list">{quizQuestions.map((item, questionIndex) => <fieldset className="quiz-question" key={item.question}><legend><span>{String(questionIndex + 1).padStart(2, "0")}</span>{item.question}</legend><div className="quiz-options">{item.options.map((option, optionIndex) => <label className={`quiz-option ${quizChecked && answers[questionIndex] === optionIndex ? (optionIndex === item.answer ? "option-correct" : "option-wrong") : ""}`} key={option}><input type="radio" name={`question-${questionIndex}`} checked={answers[questionIndex] === optionIndex} onChange={() => { setAnswers((current) => current.map((value, i) => i === questionIndex ? optionIndex : value)); setQuizChecked(false); }} /><span>{option}</span>{quizChecked && optionIndex === item.answer && <CheckCircle2 size={17} />}</label>)}</div>{quizChecked && <p className="micro-copy" role="status"><strong>คำอธิบาย:</strong> {item.explanation} {answers[questionIndex] === item.answer ? "ตอบถูกแล้ว" : "ลองอ่านคำอธิบาย แล้วเลือกคำตอบอีกครั้ง"}</p>}</fieldset>)}</div><div className="quiz-actions"><button className="small-cta" onClick={checkQuiz}>ตรวจแบบทดสอบ <ArrowUpRight size={15} /></button>{quizChecked && <span className="quiz-score" role="status">คะแนน {score} / 3 {score >= 2 ? "· ผ่านเกณฑ์แล้ว!" : "· ยังไม่ผ่าน ลองทบทวนแล้วทำใหม่ได้"}</span>}</div>
             <div className="final-speaking"><div className="final-speaking-head"><div><span className="eyebrow">ภารกิจท้ายบท · 20–30 วินาที</span><h3>แนะนำตัวเป็นภาษาจีน</h3></div><span className="mic-badge"><Mic size={20} /></span></div><div className="final-script"><strong>你好。我叫{learnerName || "＿＿"}。我是泰国人。很高兴认识你。</strong><span>Nǐ hǎo. Wǒ jiào {learnerName || "__"}. Wǒ shì Tàiguó rén. Hěn gāoxìng rènshi nǐ.</span></div><div className="record-row"><button className={`record-button ${recording ? "recording" : ""}`} onClick={recording ? stopRecording : startRecording}>{recording ? <><span className="record-pulse" /> หยุดบันทึก</> : <><Mic size={16} /> {recordingUrl ? "บันทึกใหม่" : "เริ่มบันทึกเสียงของฉัน"}</>}</button><span>เสียงเก็บไว้ในอุปกรณ์นี้เท่านั้น</span></div>{recordingError && <p className="record-error" role="status">{recordingError}</p>}{recordingUrl && <div className="recorded-audio"><span>เสียงของคุณ · ฟังทบทวน</span><audio controls src={recordingUrl} /><a href={recordingUrl} download="my-mandarin-introduction.webm">ดาวน์โหลดเสียง</a></div>}<div className="privacy-note"><CheckCircle2 size={16} /> การบันทึกทำงานในเบราว์เซอร์นี้เท่านั้น ไม่มีการอัปโหลดเสียง</div></div>
             <div className="final-checklist"><h3>ก่อนจบบท เช็กตัวเอง</h3>{["ฉันกล้าพูดภาษาจีนออกเสียง", "ฉันลองเลียนเสียงวรรณยุกต์ทั้งสี่", "ฉันแนะนำชื่อและบอกสัญชาติได้", "ฉันพูดว่า ‘ยินดีที่ได้รู้จัก’ ได้"].map((label) => <label key={label}><input type="checkbox" /> <span>{label}</span></label>)}</div>{markComplete("practice")}</section>
 
