@@ -3,3 +3,11 @@
 @media(max-width:600px){.vocab-main{padding-left:12px;padding-right:12px}.vocab-hero h1{font-size:29px}.vocab-hero>p{font-size:13px}.vocab-categories{gap:6px}.vocab-categories button{padding:7px 10px;font-size:11px}.vocab-card-visual{height:78px}.vocab-card-body{padding:13px}.vocab-example>strong{font-size:15px}.vocab-study-tip{padding:15px}.vocab-study-tip p{font-size:13px}}
 
 .vocab-related-item{min-width:0;display:flex;align-items:stretch;gap:3px}.vocab-related-item .vocab-related-open{flex:1;min-width:0}.vocab-related-item .vocab-related-speak{flex:0 0 30px;display:flex;align-items:center;justify-content:center;text-align:center;padding:5px;color:#557b60}.vocab-related-item .vocab-related-speak svg{flex-shrink:0}@media(max-width:600px){.vocab-related-item .vocab-related-speak{flex-basis:34px}}
+.vocab-audio-controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.vocab-audio-controls button{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:29px;padding:4px 7px;border:1px solid #dce7da;border-radius:8px;background:#fffefa;color:#37664d;font-size:10px;cursor:pointer}
+.vocab-audio-controls button:hover{background:#eaf2e8;border-color:#bfd2bd}
+.vocab-audio-controls button:focus-visible{outline:2px solid #397a65;outline-offset:2px}
+.vocab-audio-controls small{width:100%;font-size:10px;color:#a45f4f}
+.vocab-card-visual>.vocab-audio-controls{position:absolute;right:10px;top:10px}
+.vocab-example>div .vocab-audio-controls{justify-content:flex-end}
+@media(max-width:480px){.vocab-audio-controls{gap:4px}.vocab-audio-controls button{min-height:30px;padding:5px 7px}}
